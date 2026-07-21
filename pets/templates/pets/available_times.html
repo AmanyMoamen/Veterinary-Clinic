@@ -1,0 +1,50 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Available Appointment Times</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Available Appointment Times</h1>
+
+    <div class="details-box">
+        <p><strong>Doctor:</strong> {{ doctor }}</p>
+        <p><strong>Date:</strong> {{ visit_date }}</p>
+    </div>
+
+    {% if available %}
+
+        <div class="details-box">
+            <h3>Available Times</h3>
+
+            <ul class="times-list">
+                {% for time in available %}
+                    <li>{{ time }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    {% else %}
+
+        <div class="error-box">
+            No available appointments for this day.
+        </div>
+
+    {% endif %}
+
+    <a href="{% url 'pet_list' %}" class="back-btn">
+        Back to Pets List
+    </a>
+
+</div>
+
+</body>
+
+</html>

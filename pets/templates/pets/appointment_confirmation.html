@@ -1,0 +1,44 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Appointment Confirmation</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Appointment Confirmed </h1>
+
+    <div class="success-box">
+        Your appointment has been booked successfully.
+    </div>
+
+    <div class="details-box">
+
+        <p><strong>Pet Name:</strong> {{ pet.name }}</p>
+
+        <p><strong>Owner Name:</strong> {{ pet.owner_name }}</p>
+
+        <p><strong>Appointment Type:</strong> {{ pet.appointment_type }}</p>
+
+        <p><strong>Doctor:</strong> {{ pet.doctor }}</p>
+
+        <p><strong>Visit Date:</strong> {{ pet.visit_date }}</p>
+
+        <p><strong>Appointment Time:</strong> {{ pet.appointment_time }}</p>
+
+        <p><strong>Request ID:</strong> {{ pet.id }}</p>
+
+    </div>
+
+    <a href="{% url 'pet_list' %}" class="back-btn">
+        Back to Pets List
+    </a>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,105 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pets List</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Pets List</h1>
+
+    <a href="{% url 'add_pet' %}">Add New Pet</a>
+
+    <br><br>
+
+    <a href="{% url 'statistics' %}">View Statistics</a>
+
+    <br><br><br>
+
+    <h2>Check Available Appointment Times</h2>
+
+    <form action="{% url 'available_times' %}" method="get">
+
+        <label>Doctor:</label>
+        <input type="text" name="doctor" required>
+
+        <label>Visit Date:</label>
+        <input type="date" name="visit_date" required>
+
+        <button type="submit">
+            Show Available Times
+        </button>
+
+    </form>
+
+    <hr>
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Owner</th>
+                <th>Animal Type</th>
+                <th>Age</th>
+                <th>Visit Date</th>
+                <th>Appointment Type</th>
+                <th>Doctor</th>
+                <th>Appointment Time</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+        {% for pet in pets %}
+
+        <tr>
+
+            <td>{{ pet.name }}</td>
+            <td>{{ pet.owner_name }}</td>
+            <td>{{ pet.species }}</td>
+            <td>{{ pet.age }}</td>
+            <td>{{ pet.visit_date }}</td>
+            <td>{{ pet.appointment_type }}</td>
+            <td>{{ pet.doctor }}</td>
+            <td>{{ pet.appointment_time }}</td>
+
+            <td class="actions">
+
+                <a href="{% url 'edit_pet' pet.id %}" class="edit-btn">
+                    Edit
+                </a>
+
+                <a href="{% url 'delete_pet' pet.id %}" class="delete-btn">
+                    Delete
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% empty %}
+
+        <tr>
+            <td colspan="9">
+                No pets found.
+            </td>
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+</body>
+</html>
