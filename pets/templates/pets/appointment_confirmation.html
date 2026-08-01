@@ -2,15 +2,34 @@
 
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Appointment Confirmation</title>
+
+    <title>Appointment Confirmation | PetCare Veterinary Clinic</title>
+
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
 </head>
+
 <body>
 
 <div class="container">
 
-    <h1>Appointment Confirmed </h1>
+    <div style="text-align:center; margin-bottom:30px;">
+
+        <img src="{% static 'images/logo.png' %}" alt="PetCare Logo" width="180">
+
+        <h1>PetCare Veterinary Clinic</h1>
+
+        <p class="logo-text">
+            Healthy Pets, Happier Families
+        </p>
+
+    </div>
+
+    <h2 class="section-title">
+        Appointment Confirmed
+    </h2>
 
     <div class="success-box">
         Your appointment has been booked successfully.
@@ -34,11 +53,16 @@
 
     </div>
 
-    <a href="{% url 'pet_list' %}" class="back-btn">
-        Back to Pets List
-    </a>
+    <div style="text-align:center; margin-top:30px;">
+
+        <a href="{% url 'pet_list' %}" class="back-btn">
+            Back to Home
+        </a>
+
+    </div>
 
 </div>
 
 </body>
+
 </html>

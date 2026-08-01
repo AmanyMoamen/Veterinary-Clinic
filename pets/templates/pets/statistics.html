@@ -1,43 +1,80 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
+
 <head>
+
     <title>Clinic Statistics</title>
-    {% load static %}
+
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
 </head>
+
 <body>
 
 <div class="container">
 
-    <h1>Clinic Statistics</h1>
+    <div style="text-align:center; margin-bottom:30px;">
+
+        <img src="{% static 'images/logo.png' %}" alt="PetCare Logo" width="180">
+
+        <h1>PetCare Veterinary Clinic</h1>
+
+        <p class="logo-text">
+            Healthy Pets, Happier Families
+        </p>
+
+    </div>
+
+    <h2 class="section-title">Clinic Statistics</h2>
 
     <!-- Total Pets -->
+
     <div class="stats-card">
+
         <h2>Total Pets</h2>
+
         <div class="stats-number">
             {{ total_pets }}
         </div>
+
     </div>
 
     <!-- Pets by Species -->
+
     <div class="stats-card">
+
         <h2>Pets by Species</h2>
 
         <ul class="stats-list">
+
             {% for item in species_stats %}
+
             <li>
+
                 <strong>{{ item.species }}</strong>
+
                 <span>{{ item.total }}</span>
+
             </li>
+
             {% endfor %}
+
         </ul>
+
     </div>
 
-    <a href="{% url 'pet_list' %}" class="back-btn">
-        Back to Pets List
-    </a>
+    <div style="text-align:center; margin-top:25px;">
+
+        <a href="{% url 'pet_list' %}" class="back-btn">
+            Back to Pets List
+        </a>
+
+    </div>
 
 </div>
 
 </body>
+
 </html>

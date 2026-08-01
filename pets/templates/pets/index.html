@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Pets List</title>
+    <title>PetCare Veterinary Clinic</title>
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
@@ -12,17 +12,27 @@
 
 <div class="container">
 
-    <h1>Pets List</h1>
+    <div style="text-align:center; margin-bottom:50px;">
 
-    <a href="{% url 'add_pet' %}">Add New Pet</a>
+        <img src="{% static 'images/logo.png' %}" alt="PetCare Logo" width="180">
 
-    <br><br>
+        <h1>PetCare Veterinary Clinic</h1>
 
-    <a href="{% url 'statistics' %}">View Statistics</a>
+        <p class="logo-text">
+            Healthy Pets, Happier Families
+        </p>
 
-    <br><br><br>
+        <a href="{% url 'add_pet' %}" class="menu-btn">
+            Add New Pet
+        </a>
 
-    <h2>Check Available Appointment Times</h2>
+        <a href="{% url 'statistics' %}" class="menu-btn">
+            View Statistics
+        </a>
+
+    </div>
+
+    <h2 class="section-title">Available Appointment Times</h2>
 
     <form action="{% url 'available_times' %}" method="get">
 
@@ -40,6 +50,58 @@
 
     <hr>
 
+    <h2 class="section-title">Filter Appointments</h2>
+
+    <div style="margin-bottom:20px; text-align:center;">
+
+        <a href="{% url 'pet_list' %}" class="menu-btn">
+            All
+        </a>
+
+        <a href="{% url 'pet_list' %}?filter=today" class="menu-btn">
+            Today
+        </a>
+
+        <a href="{% url 'pet_list' %}?filter=week" class="menu-btn">
+            This Week
+        </a>
+
+        <a href="{% url 'pet_list' %}?filter=normal" class="menu-btn">
+            Normal
+        </a>
+
+        <a href="{% url 'pet_list' %}?filter=urgent" class="menu-btn">
+            Urgent
+        </a>
+
+        <a href="{% url 'pet_list' %}?filter=emergency" class="menu-btn">
+            Emergency
+        </a>
+
+    </div>
+
+    <!-- Filter By Doctor -->
+
+    <form method="get" style="margin-bottom:25px; text-align:center;">
+
+        <select name="doctor">
+
+            <option value="">All Doctors</option>
+
+            {% for doctor in doctors %}
+                <option value="{{ doctor.name }}">
+                    {{ doctor.name }}
+                </option>
+            {% endfor %}
+
+        </select>
+
+        <button type="submit">
+            Filter by Doctor
+        </button>
+
+    </form>
+
     <table>
 
         <thead>
@@ -47,8 +109,8 @@
                 <th>Name</th>
                 <th>Owner</th>
                 <th>Animal Type</th>
-                <th>Age</th>
                 <th>Visit Date</th>
+                <th>Visit Reason</th>
                 <th>Appointment Type</th>
                 <th>Doctor</th>
                 <th>Appointment Time</th>
@@ -65,20 +127,16 @@
             <td>{{ pet.name }}</td>
             <td>{{ pet.owner_name }}</td>
             <td>{{ pet.species }}</td>
-            <td>{{ pet.age }}</td>
             <td>{{ pet.visit_date }}</td>
+            <td>{{ pet.visit_reason }}</td>
             <td>{{ pet.appointment_type }}</td>
             <td>{{ pet.doctor }}</td>
             <td>{{ pet.appointment_time }}</td>
 
             <td class="actions">
 
-                <a href="{% url 'edit_pet' pet.id %}" class="edit-btn">
-                    Edit
-                </a>
-
-                <a href="{% url 'delete_pet' pet.id %}" class="delete-btn">
-                    Delete
+                <a href="{% url 'request_edit' pet.id %}" class="edit-btn">
+                    Request Edit
                 </a>
 
             </td>

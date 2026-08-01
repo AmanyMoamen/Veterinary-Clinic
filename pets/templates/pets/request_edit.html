@@ -5,7 +5,7 @@
 
 <head>
 
-    <title>{{ title }} | PetCare Veterinary Clinic</title>
+    <title>Request Edit | PetCare Veterinary Clinic</title>
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
@@ -27,14 +27,14 @@
 
     </div>
 
-    <h2 class="section-title">Pet Registration Form</h2>
+    <h2 class="section-title">
+        Edit Request
+    </h2>
 
-    {% if error %}
-    <div class="error-box">
-        {{ error }}
-    </div>
-    {% endif %}
-
+    <p style="text-align:center; font-size:22px; margin-bottom:30px;">
+       <span style="font-weight:bold; color:#2E86DE;">Pet:</span>
+       <span style="font-weight:600; color:#1B4F72;">{{ pet.name }}</span>
+    </p>
     <form method="POST">
 
         {% csrf_token %}
@@ -42,7 +42,7 @@
         {{ form.as_p }}
 
         <button type="submit">
-            Save
+            Submit Request
         </button>
 
     </form>
@@ -52,7 +52,7 @@
     <div style="text-align:center;">
 
         <a href="{% url 'pet_list' %}" class="back-btn">
-             Back to Home
+            Back to Home
         </a>
 
     </div>

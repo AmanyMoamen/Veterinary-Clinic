@@ -1,12 +1,49 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Count
-from .models import Pet
-from .forms import PetForm
+from django.db.models import Count, Q
+from datetime import datetime, timedelta, date
+
+from .models import Pet, EditRequest, Doctor
+from .forms import PetForm, EditRequestForm
 
 
 def pet_list(request):
     pets = Pet.objects.all()
-    return render(request, "pets/index.html", {"pets": pets})
+    doctors = Doctor.objects.all()
+
+    filter_type = request.GET.get("filter")
+    doctor = request.GET.get("doctor")
+
+    if filter_type == "today":
+        pets = pets.filter(visit_date=date.today())
+
+    elif filter_type == "week":
+        today = date.today()
+        end_week = today + timedelta(days=7)
+        pets = pets.filter(
+            visit_date__gte=today,
+            visit_date__lte=end_week
+        )
+
+    elif filter_type == "normal":
+        pets = pets.filter(priority="Normal")
+
+    elif filter_type == "urgent":
+        pets = pets.filter(priority="Urgent")
+
+    elif filter_type == "emergency":
+        pets = pets.filter(priority="Emergency")
+
+    if doctor:
+        pets = pets.filter(doctor=doctor)
+
+    return render(
+        request,
+        "pets/index.html",
+        {
+            "pets": pets,
+            "doctors": doctors,
+        },
+    )
 
 
 def add_pet(request):
@@ -23,7 +60,7 @@ def add_pet(request):
                 visit_date=visit_date
             ).count()
 
-            if appointments_count >= 3:
+            if appointments_count >= doctor.max_appointments_per_day:
                 return render(
                     request,
                     "pets/add_pet.html",
@@ -33,21 +70,30 @@ def add_pet(request):
                     }
                 )
 
-            conflict = Pet.objects.filter(
+            existing_appointments = Pet.objects.filter(
                 doctor=doctor,
-                visit_date=visit_date,
-                appointment_time=appointment_time
-            ).exists()
+                visit_date=visit_date
+            )
 
-            if conflict:
-                return render(
-                    request,
-                    "pets/add_pet.html",
-                    {
-                        "form": form,
-                        "error": "This doctor already has an appointment at this date and time."
-                    }
+            new_time = datetime.combine(visit_date, appointment_time)
+
+            for appointment in existing_appointments:
+                existing_time = datetime.combine(
+                    visit_date,
+                    appointment.appointment_time
                 )
+
+                difference = abs(new_time - existing_time)
+
+                if difference < timedelta(minutes=30):
+                    return render(
+                        request,
+                        "pets/add_pet.html",
+                        {
+                            "form": form,
+                            "error": "This doctor already has another appointment within 30 minutes."
+                        }
+                    )
 
             pet = form.save()
 
@@ -63,13 +109,13 @@ def add_pet(request):
         form = PetForm()
 
     return render(
-    request,
-    "pets/add_pet.html",
-    {
-        "form": form,
-        "title": "Add New Pet"
-    }
-)
+        request,
+        "pets/add_pet.html",
+        {
+            "form": form,
+            "title": "Add New Pet"
+        }
+    )
 
 
 def edit_pet(request, pet_id):
@@ -86,13 +132,14 @@ def edit_pet(request, pet_id):
         form = PetForm(instance=pet)
 
     return render(
-    request,
-    "pets/add_pet.html",
-    {
-        "form": form,
-        "title": "Edit Pet"
-    }
-)
+        request,
+        "pets/add_pet.html",
+        {
+            "form": form,
+            "title": "Edit Pet"
+        }
+    )
+
 
 def delete_pet(request, pet_id):
     pet = get_object_or_404(Pet, id=pet_id)
@@ -146,8 +193,37 @@ def available_times(request):
 
     available = [t for t in all_times if t not in booked]
 
-    return render(request, "pets/available_times.html", {
-        "doctor": doctor,
-        "visit_date": visit_date,
-        "available": available,
-    })
+    return render(
+        request,
+        "pets/available_times.html",
+        {
+            "doctor": doctor,
+            "visit_date": visit_date,
+            "available": available,
+        },
+    )
+
+
+def request_edit(request, pet_id):
+    pet = get_object_or_404(Pet, id=pet_id)
+
+    if request.method == "POST":
+        form = EditRequestForm(request.POST)
+
+        if form.is_valid():
+            edit_request = form.save(commit=False)
+            edit_request.pet = pet
+            edit_request.save()
+            return redirect("pet_list")
+
+    else:
+        form = EditRequestForm()
+
+    return render(
+        request,
+        "pets/request_edit.html",
+        {
+            "form": form,
+            "pet": pet,
+        },
+    )
