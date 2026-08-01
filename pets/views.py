@@ -2,6 +2,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Count, Q
 from datetime import datetime, timedelta, date
 
+from django.http import FileResponse
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import inch
+from io import BytesIO
+
 from .models import Pet, EditRequest, Doctor
 from .forms import PetForm, EditRequestForm
 
@@ -226,4 +231,59 @@ def request_edit(request, pet_id):
             "form": form,
             "pet": pet,
         },
+    )
+
+
+def download_pdf(request, pet_id):
+    pet = get_object_or_404(Pet, id=pet_id)
+
+    buffer = BytesIO()
+
+    pdf = canvas.Canvas(buffer)
+
+    pdf.setTitle("Appointment Slip")
+
+    pdf.setFont("Helvetica-Bold", 18)
+    pdf.drawString(180, 800, "PetCare Veterinary Clinic")
+
+    pdf.setFont("Helvetica", 14)
+    pdf.drawString(220, 775, "Appointment Slip")
+
+    pdf.line(50, 760, 550, 760)
+
+    y = 730
+
+    pdf.setFont("Helvetica", 12)
+
+    pdf.drawString(60, y, f"Appointment Number: {pet.appointment_number}")
+    y -= 25
+
+    pdf.drawString(60, y, f"Pet Name: {pet.name}")
+    y -= 25
+
+    pdf.drawString(60, y, f"Owner Name: {pet.owner_name}")
+    y -= 25
+
+    pdf.drawString(60, y, f"Doctor: {pet.doctor}")
+    y -= 25
+
+    pdf.drawString(60, y, f"Visit Date: {pet.visit_date}")
+    y -= 25
+
+    pdf.drawString(60, y, f"Appointment Time: {pet.appointment_time}")
+    y -= 25
+
+    pdf.drawString(60, y, f"Priority: {pet.priority}")
+    y -= 25
+
+    pdf.drawString(60, y, f"Visit Reason: {pet.visit_reason}")
+
+    pdf.save()
+
+    buffer.seek(0)
+
+    return FileResponse(
+        buffer,
+        as_attachment=True,
+        filename=f"{pet.appointment_number}.pdf"
     )

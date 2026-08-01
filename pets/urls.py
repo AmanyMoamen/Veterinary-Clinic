@@ -15,4 +15,11 @@ urlpatterns = [
 
     # Request Edit
     path("request-edit/<int:pet_id>/", views.request_edit, name="request_edit"),
+
+    # Download Appointment PDF
+    path(
+        "appointment-pdf/<int:pet_id>/",
+        views.download_pdf,
+        name="appointment_pdf",
+    ),
 ]

@@ -49,14 +49,20 @@
 
         <p><strong>Appointment Time:</strong> {{ pet.appointment_time }}</p>
 
-        <p><strong>Request ID:</strong> {{ pet.id }}</p>
+        <p><strong>Appointment Number:</strong> {{ pet.appointment_number }}</p>
 
     </div>
 
     <div style="text-align:center; margin-top:30px;">
 
+        <a href="{% url 'appointment_pdf' pet.id %}" class="btn">
+            Download Appointment PDF
+        </a>
+
+       <br><br>
+
         <a href="{% url 'pet_list' %}" class="back-btn">
-            Back to Home
+           Back to Home
         </a>
 
     </div>

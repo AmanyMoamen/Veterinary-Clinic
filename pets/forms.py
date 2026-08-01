@@ -11,7 +11,8 @@ class PetForm(forms.ModelForm):
 
     class Meta:
         model = Pet
-        fields = '__all__'
+
+        exclude = ['appointment_number']
 
         widgets = {
             'date_of_birth': forms.DateInput(attrs={'type': 'date'}),

@@ -25,6 +25,7 @@ class Pet(models.Model):
 
     owner_name = models.CharField(max_length=100)
     owner_phone = models.CharField(max_length=15)
+
     appointment_type = models.CharField(max_length=20)
 
     PRIORITY_CHOICES = [
@@ -43,6 +44,29 @@ class Pet(models.Model):
 
     appointment_time = models.TimeField()
 
+    # Appointment Serial Number
+    appointment_number = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.appointment_number:
+            last_pet = Pet.objects.order_by("-id").first()
+
+            if last_pet and last_pet.appointment_number:
+                try:
+                    last_number = int(last_pet.appointment_number.split("-")[1])
+                except:
+                    last_number = last_pet.id
+            else:
+                last_number = 0
+
+            self.appointment_number = f"APT-{last_number + 1:04d}"
+
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.name
 
@@ -58,7 +82,7 @@ class EditRequest(models.Model):
         ("Pet Name", "Pet Name"),
         ("Priority", "Priority"),
         ("Other", "Other"),
-    ]    
+    ]
 
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE)
 
@@ -67,7 +91,7 @@ class EditRequest(models.Model):
         choices=EDIT_TYPE_CHOICES,
         blank=False,
         default=""
-    )   
+    )
 
     reason = models.TextField()
 
