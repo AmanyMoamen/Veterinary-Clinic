@@ -1,9 +1,10 @@
 # Veterinary Clinic Appointment System
 
 ## Project Description
+
 This project is a Veterinary Clinic Appointment System developed using Django.
 
-The system allows the receptionist to manage pet appointments, prevent scheduling conflicts, check available appointment times, and generate an appointment confirmation page.
+The system helps the receptionist manage pet appointments, assign doctors, prevent scheduling conflicts, check available appointment times, generate appointment numbers, monitor appointment statistics, and handle appointment edit requests.
 
 ---
 
@@ -13,10 +14,22 @@ The system allows the receptionist to manage pet appointments, prevent schedulin
 - Edit existing appointments
 - Delete appointments
 - View all appointments
+- Doctor Dashboard
 - View appointment statistics
+- Generate automatic appointment numbers
 - Check available appointment times for each doctor
 - Prevent appointment conflicts
 - Limit the maximum number of appointments per doctor per day
+- Filter appointments by:
+  - Doctor
+  - Today
+  - This Week
+  - Appointment Priority
+- Appointment Priority:
+  - Normal
+  - Urgent
+  - Emergency
+- Request appointment edit
 - Generate an appointment confirmation page
 
 ---
@@ -63,4 +76,4 @@ http://127.0.0.1:8000/pets/
 
 ## Developed By
 
-Amany Moamen
+*Amany Moamen*
