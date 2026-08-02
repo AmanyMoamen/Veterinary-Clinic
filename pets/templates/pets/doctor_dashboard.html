@@ -1,0 +1,89 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Doctor Dashboard</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Doctor Dashboard</h1>
+
+    <h3 style="text-align:center;">
+        Today's Appointments - {{ today }}
+    </h3>
+
+    {% for item in dashboard %}
+
+        <div class="details-box" style="margin-bottom:30px;">
+
+            <h2>{{ item.doctor }}</h2>
+
+            <p>
+                <strong>Total Appointments:</strong>
+                {{ item.count }}
+            </p>
+
+            <table border="1" cellpadding="8" cellspacing="0" width="100%">
+
+                <tr>
+                    <th>Appointment No.</th>
+                    <th>Time</th>
+                    <th>Pet Name</th>
+                    <th>Priority</th>
+                    <th>Visit Reason</th>
+                </tr>
+
+                {% for pet in item.appointments %}
+
+                <tr>
+
+                    <td>{{ pet.appointment_number }}</td>
+
+                    <td>{{ pet.appointment_time }}</td>
+
+                    <td>{{ pet.name }}</td>
+
+                    <td>{{ pet.priority }}</td>
+
+                    <td>{{ pet.visit_reason }}</td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+                    <td colspan="5" style="text-align:center;">
+                        No appointments today.
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </table>
+
+        </div>
+
+    {% endfor %}
+
+    <div style="text-align:center;">
+
+        <a href="{% url 'pet_list' %}" class="back-btn">
+            Back to Home
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

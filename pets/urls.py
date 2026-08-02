@@ -22,4 +22,11 @@ urlpatterns = [
         views.download_pdf,
         name="appointment_pdf",
     ),
+
+    # Doctor Dashboard
+    path(
+        "doctor-dashboard/",
+        views.doctor_dashboard,
+        name="doctor_dashboard",
+    ),
 ]

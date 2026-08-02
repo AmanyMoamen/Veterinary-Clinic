@@ -5,14 +5,16 @@ body{
 }
 
 .container{
-    width:90%;
-    max-width:900px;
+    width:95%;
+    max-width:1400px;
     margin:auto;
     background:white;
     padding:25px;
     border-radius:10px;
     box-shadow:0 0 10px rgba(0,0,0,.2);
+    overflow-x:auto;
 }
+
 h1{
     color:#0d6efd;
 }
@@ -137,10 +139,11 @@ ul{
     font-weight:bold;
 }
 
-/* Tables */
+/* ================= TABLE ================= */
 
 table{
     width:100%;
+    min-width:1200px;
     border-collapse:collapse;
     margin-top:20px;
 }
@@ -150,12 +153,14 @@ table th{
     color:white;
     padding:12px;
     text-align:center;
+    white-space:nowrap;
 }
 
 table td{
     border:1px solid #ddd;
     padding:10px;
     text-align:center;
+    white-space:nowrap;
 }
 
 table tr:nth-child(even){
@@ -175,6 +180,7 @@ table tr:hover{
     max-width:700px;
     box-shadow:0 2px 8px rgba(0,0,0,.1);
 }
+
 .stats-card h2{
     color:#0d6efd;
     margin-bottom:15px;
@@ -233,15 +239,15 @@ table tr:hover{
     color:#fff !important;
 }
 
-.error-box {
-    background-color: #ffe5e5;
-    color: #b30000;
-    border: 1px solid #ff9999;
-    padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    font-weight: bold;
-    text-align: center;
+.error-box{
+    background:#ffe5e5;
+    color:#b30000;
+    border:1px solid #ff9999;
+    padding:12px;
+    border-radius:8px;
+    margin-bottom:20px;
+    font-weight:bold;
+    text-align:center;
 }
 
 .success-box{

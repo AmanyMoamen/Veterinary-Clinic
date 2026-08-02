@@ -54,29 +54,17 @@
 
     <div style="margin-bottom:20px; text-align:center;">
 
-        <a href="{% url 'pet_list' %}" class="menu-btn">
-            All
-        </a>
+        <a href="{% url 'pet_list' %}" class="menu-btn">All</a>
 
-        <a href="{% url 'pet_list' %}?filter=today" class="menu-btn">
-            Today
-        </a>
+        <a href="{% url 'pet_list' %}?filter=today" class="menu-btn">Today</a>
 
-        <a href="{% url 'pet_list' %}?filter=week" class="menu-btn">
-            This Week
-        </a>
+        <a href="{% url 'pet_list' %}?filter=week" class="menu-btn">This Week</a>
 
-        <a href="{% url 'pet_list' %}?filter=normal" class="menu-btn">
-            Normal
-        </a>
+        <a href="{% url 'pet_list' %}?filter=normal" class="menu-btn">Normal</a>
 
-        <a href="{% url 'pet_list' %}?filter=urgent" class="menu-btn">
-            Urgent
-        </a>
+        <a href="{% url 'pet_list' %}?filter=urgent" class="menu-btn">Urgent</a>
 
-        <a href="{% url 'pet_list' %}?filter=emergency" class="menu-btn">
-            Emergency
-        </a>
+        <a href="{% url 'pet_list' %}?filter=emergency" class="menu-btn">Emergency</a>
 
     </div>
 
@@ -102,62 +90,73 @@
 
     </form>
 
-    <table>
+    <!-- Table Responsive -->
 
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Owner</th>
-                <th>Animal Type</th>
-                <th>Visit Date</th>
-                <th>Visit Reason</th>
-                <th>Appointment Type</th>
-                <th>Doctor</th>
-                <th>Appointment Time</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
+    <div class="table-responsive">
 
-        <tbody>
+        <table>
 
-        {% for pet in pets %}
+            <thead>
 
-        <tr>
+                <tr>
+                    <th>Name</th>
+                    <th>Owner</th>
+                    <th>Animal Type</th>
+                    <th>Visit Date</th>
+                    <th>Visit Reason</th>
+                    <th>Appointment Type</th>
+                    <th>Doctor</th>
+                    <th>Appointment Time</th>
+                    <th>Appointment No.</th>
+                    <th>Actions</th>
+                </tr>
 
-            <td>{{ pet.name }}</td>
-            <td>{{ pet.owner_name }}</td>
-            <td>{{ pet.species }}</td>
-            <td>{{ pet.visit_date }}</td>
-            <td>{{ pet.visit_reason }}</td>
-            <td>{{ pet.appointment_type }}</td>
-            <td>{{ pet.doctor }}</td>
-            <td>{{ pet.appointment_time }}</td>
+            </thead>
 
-            <td class="actions">
+            <tbody>
 
-                <a href="{% url 'request_edit' pet.id %}" class="edit-btn">
-                    Request Edit
-                </a>
+            {% for pet in pets %}
 
-            </td>
+                <tr>
 
-        </tr>
+                    <td>{{ pet.name }}</td>
+                    <td>{{ pet.owner_name }}</td>
+                    <td>{{ pet.species }}</td>
+                    <td>{{ pet.visit_date }}</td>
+                    <td>{{ pet.visit_reason }}</td>
+                    <td>{{ pet.appointment_type }}</td>
+                    <td>{{ pet.doctor }}</td>
+                    <td>{{ pet.appointment_time }}</td>
+                    <td>{{ pet.appointment_number }}</td>
 
-        {% empty %}
+                    <td class="actions">
 
-        <tr>
-            <td colspan="9">
-                No pets found.
-            </td>
-        </tr>
+                        <a href="{% url 'request_edit' pet.id %}" class="edit-btn">
+                            Request Edit
+                        </a>
 
-        {% endfor %}
+                    </td>
 
-        </tbody>
+                </tr>
 
-    </table>
+            {% empty %}
+
+                <tr>
+                    <td colspan="10">
+                        No pets found.
+                    </td>
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
 
 </div>
 
 </body>
+
 </html>

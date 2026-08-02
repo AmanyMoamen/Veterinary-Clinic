@@ -287,3 +287,38 @@ def download_pdf(request, pet_id):
         as_attachment=True,
         filename=f"{pet.appointment_number}.pdf"
     )
+
+
+def doctor_dashboard(request):
+    today = date.today()
+
+    appointments = Pet.objects.filter(
+        visit_date=today
+    ).order_by(
+        "doctor",
+        "appointment_time"
+    )
+
+    doctors = Doctor.objects.all()
+
+    dashboard = []
+
+    for doctor in doctors:
+        doctor_appointments = appointments.filter(
+            doctor=doctor.name
+        )
+
+        dashboard.append({
+            "doctor": doctor.name,
+            "appointments": doctor_appointments,
+            "count": doctor_appointments.count(),
+        })
+
+    return render(
+        request,
+        "pets/doctor_dashboard.html",
+        {
+            "dashboard": dashboard,
+            "today": today,
+        },
+    )
