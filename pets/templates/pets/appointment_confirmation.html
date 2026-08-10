@@ -1,11 +1,14 @@
 {% load static %}
+{% load i18n %}
 
 <!DOCTYPE html>
 <html>
 
 <head>
 
-    <title>Appointment Confirmation | PetCare Veterinary Clinic</title>
+    <title>
+        {% translate "Appointment Confirmation" %} | {% translate "PetCare Veterinary Clinic" %}
+    </title>
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
@@ -13,56 +16,84 @@
 
 <body>
 
+<!-- Language Switcher -->
+<div style="text-align:right; margin-bottom:20px;">
+
+    <form action="{% url 'set_language' %}" method="post" style="display:inline;">
+        {% csrf_token %}
+
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+
+        <button type="submit"
+                name="language"
+                value="ar"
+                style="background:none; border:none; color:#008acb; cursor:pointer; font-size:16px;">
+           العربية
+        </button>
+
+    </form>
+
+    <span style="color:#777;">|</span>
+
+    <form action="{% url 'set_language' %}" method="post" style="display:inline;">
+        {% csrf_token %}
+
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+
+        <button type="submit"
+                name="language"
+                value="en"
+                style="background:none; border:none; color:#008acb; cursor:pointer; font-size:16px;">
+            English
+        </button>
+
+    </form>
+
+</div>
 <div class="container">
 
-    <div style="text-align:center; margin-bottom:30px;">
+    <div style="text-align:center; margin-bottom:10px;">
 
-        <img src="{% static 'images/logo.png' %}" alt="PetCare Logo" width="180">
-
-        <h1>PetCare Veterinary Clinic</h1>
-
-        <p class="logo-text">
-            Healthy Pets, Happier Families
-        </p>
+        <img src="{% static 'images/logo.png' %}" alt="{% translate 'Clinic Logo' %}" width="240">
 
     </div>
 
     <h2 class="section-title">
-        Appointment Confirmed
+        {% translate "Appointment Confirmed" %}
     </h2>
 
     <div class="success-box">
-        Your appointment has been booked successfully.
+        {% translate "Your appointment has been booked successfully." %}
     </div>
 
     <div class="details-box">
 
-        <p><strong>Pet Name:</strong> {{ pet.name }}</p>
+        <p><strong>{% translate "Pet Name" %}:</strong> {{ pet.name }}</p>
 
-        <p><strong>Owner Name:</strong> {{ pet.owner_name }}</p>
+        <p><strong>{% translate "Owner Name" %}:</strong> {{ pet.owner_name }}</p>
 
-        <p><strong>Appointment Type:</strong> {{ pet.appointment_type }}</p>
+        <p><strong>{% translate "Appointment Type" %}:</strong> {{ pet.appointment_type }}</p>
 
-        <p><strong>Doctor:</strong> {{ pet.doctor }}</p>
+        <p><strong>{% translate "Doctor" %}:</strong> {{ pet.doctor }}</p>
 
-        <p><strong>Visit Date:</strong> {{ pet.visit_date }}</p>
+        <p><strong>{% translate "Visit Date" %}:</strong> {{ pet.visit_date }}</p>
 
-        <p><strong>Appointment Time:</strong> {{ pet.appointment_time }}</p>
+        <p><strong>{% translate "Appointment Time" %}:</strong> {{ pet.appointment_time }}</p>
 
-        <p><strong>Appointment Number:</strong> {{ pet.appointment_number }}</p>
+        <p><strong>{% translate "Appointment Number" %}:</strong> {{ pet.appointment_number }}</p>
 
     </div>
 
     <div style="text-align:center; margin-top:30px;">
 
         <a href="{% url 'appointment_pdf' pet.id %}" class="btn">
-            Download Appointment PDF
+            {% translate "Download Appointment PDF" %}
         </a>
 
        <br><br>
 
         <a href="{% url 'pet_list' %}" class="back-btn">
-           Back to Home
+           {% translate "Back to Home" %}
         </a>
 
     </div>

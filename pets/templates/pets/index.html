@@ -1,9 +1,9 @@
-{% load static %}
+﻿{% load static i18n %}
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>PetCare Veterinary Clinic</title>
+    <title>{% translate "PetCare Veterinary Clinic" %}</title>
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
@@ -12,59 +12,123 @@
 
 <div class="container">
 
-    <div style="text-align:center; margin-bottom:50px;">
+    <!-- Language Switcher -->
+    <div style="text-align:right; margin-bottom:20px;">
 
-        <img src="{% static 'images/logo.png' %}" alt="PetCare Logo" width="180">
+        <form action="{% url 'set_language' %}" method="post" style="display:inline;">
+            {% csrf_token %}
 
-        <h1>PetCare Veterinary Clinic</h1>
+            <input type="hidden" name="next" value="{{ request.get_full_path }}">
 
-        <p class="logo-text">
-            Healthy Pets, Happier Families
-        </p>
+            <button type="submit"
+                    name="language"
+                    value="ar"
+                    style="background:none; border:none; color:#008acb; cursor:pointer; font-size:16px;">
+                العربية
+            </button>
+
+        </form>
+
+        <span style="color:#777;">|</span>
+
+        <form action="{% url 'set_language' %}" method="post" style="display:inline;">
+            {% csrf_token %}
+
+            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+
+            <button type="submit"
+                    name="language"
+                    value="en"
+                    style="background:none; border:none; color:#008acb; cursor:pointer; font-size:16px;">
+                English
+            </button>
+
+        </form>
+
+    </div>
+
+    <div style="text-align:center; margin-bottom:10px;">
+
+        <img src="{% static 'images/logo.png' %}"
+          alt="{% translate 'Clinic Logo' %}"
+          width="240">
+
+    </div>
+
+    <div style="text-align:center;">
 
         <a href="{% url 'add_pet' %}" class="menu-btn">
-            Add New Pet
+            {% translate "Add New Pet" %}
         </a>
 
         <a href="{% url 'statistics' %}" class="menu-btn">
-            View Statistics
+            {% translate "View Statistics" %}
         </a>
 
     </div>
 
-    <h2 class="section-title">Available Appointment Times</h2>
+    <h2 class="section-title">{% translate "Available Appointment Times" %}</h2>
 
     <form action="{% url 'available_times' %}" method="get">
 
-        <label>Doctor:</label>
-        <input type="text" name="doctor" required>
+    <label>{% translate "Doctor" %}:</label>
 
-        <label>Visit Date:</label>
-        <input type="date" name="visit_date" required>
+    <select name="doctor" required>
 
-        <button type="submit">
-            Show Available Times
-        </button>
+        <option value="">
+            {% translate "Select Doctor" %}
+        </option>
 
-    </form>
+        {% for doctor in doctors %}
+
+            <option value="{{ doctor.id }}">
+                {{ doctor.name }}
+            </option>
+
+        {% endfor %}
+
+    </select>
+
+    <label>{% translate "Visit Date" %}:</label>
+
+    <input type="date" name="visit_date" required>
+
+    <button type="submit">
+        {% translate "Show Available Times" %}
+    </button>
+
+</form>
 
     <hr>
 
-    <h2 class="section-title">Filter Appointments</h2>
+    <h2 class="section-title">{% translate "Filter Appointments" %}</h2>
 
     <div style="margin-bottom:20px; text-align:center;">
 
-        <a href="{% url 'pet_list' %}" class="menu-btn">All</a>
+        <a href="{% url 'pet_list' %}" class="menu-btn">
+          {% translate "All" %}
+        </a>
 
-        <a href="{% url 'pet_list' %}?filter=today" class="menu-btn">Today</a>
+        <a href="{% url 'pet_list' %}?filter=today" class="menu-btn">
+          {% translate "Today" %}
+        </a>
 
-        <a href="{% url 'pet_list' %}?filter=week" class="menu-btn">This Week</a>
+        <a href="{% url 'pet_list' %}?filter=week" class="menu-btn">
+          {% translate "This Week" %}
+        </a> 
 
-        <a href="{% url 'pet_list' %}?filter=normal" class="menu-btn">Normal</a>
+        <a href="{% url 'pet_list' %}?filter=normal" class="menu-btn">
+          {% translate "Normal" %}
+        </a>
 
-        <a href="{% url 'pet_list' %}?filter=urgent" class="menu-btn">Urgent</a>
 
-        <a href="{% url 'pet_list' %}?filter=emergency" class="menu-btn">Emergency</a>
+        <a href="{% url 'pet_list' %}?filter=urgent" class="menu-btn">
+          {% translate "Urgent" %}
+        </a>
+
+        <a href="{% url 'pet_list' %}?filter=emergency" class="menu-btn">
+          {% translate "Emergency" %}
+        </a>
 
     </div>
 
@@ -74,10 +138,12 @@
 
         <select name="doctor">
 
-            <option value="">All Doctors</option>
+            <option value="">
+                {% translate "All Doctors" %}
+            </option>    
 
             {% for doctor in doctors %}
-                <option value="{{ doctor.name }}">
+                <option value="{{ doctor.id }}">
                     {{ doctor.name }}
                 </option>
             {% endfor %}
@@ -85,8 +151,8 @@
         </select>
 
         <button type="submit">
-            Filter by Doctor
-        </button>
+            {% translate "Filter by Doctor" %}
+        </button>      
 
     </form>
 
@@ -99,17 +165,19 @@
             <thead>
 
                 <tr>
-                    <th>Name</th>
-                    <th>Owner</th>
-                    <th>Animal Type</th>
-                    <th>Visit Date</th>
-                    <th>Visit Reason</th>
-                    <th>Appointment Type</th>
-                    <th>Doctor</th>
-                    <th>Appointment Time</th>
-                    <th>Appointment No.</th>
-                    <th>Actions</th>
-                </tr>
+                    <th>{% translate "Name" %}</th>
+                    <th>{% translate "Owner" %}</th>
+                    <th>{% translate "Animal Type" %}</th>
+                    <th>{% translate "Visit Date" %}</th>
+                    <th>{% translate "Visit Reason" %}</th>
+                    <th>{% translate "Appointment Type" %}</th>
+                    <th>{% translate "Priority" %}</th>
+                    <th>{% translate "Doctor" %}</th>
+                    <th>{% translate "Appointment Time" %}</th>
+                    <th>{% translate "Appointment No." %}</th>
+                    <th>{% translate "Status" %}</th>
+                    <th>{% translate "Actions" %}</th>
+                </tr>      
 
             </thead>
 
@@ -125,25 +193,80 @@
                     <td>{{ pet.visit_date }}</td>
                     <td>{{ pet.visit_reason }}</td>
                     <td>{{ pet.appointment_type }}</td>
+                    <td>
+
+                       {% if pet.priority == "Emergency" %}
+
+                           <span style="background:#dc3545;color:white;padding:5px 10px;border-radius:5px;">
+                               {% translate pet.priority %}
+                           </span>
+
+                       {% elif pet.priority == "Urgent" %}
+
+                           <span style="background:#fd7e14;color:white;padding:5px 10px;border-radius:5px;">
+                               {% translate pet.priority %}
+                           </span>
+
+                       {% else %}
+
+                           <span style="background:#28a745;color:white;padding:5px 10px;border-radius:5px;">
+                               {% translate pet.priority %}
+                           </span>
+
+                       {% endif %}
+
+                    </td>
                     <td>{{ pet.doctor }}</td>
                     <td>{{ pet.appointment_time }}</td>
                     <td>{{ pet.appointment_number }}</td>
+                    <td>
+
+                         {% if pet.status == "Waiting" %}
+
+                              <span class="status-waiting">
+                                   {% translate pet.status %}
+                              </span>
+
+                         {% elif pet.status == "Arrived" %}
+
+                              <span class="status-arrived">
+                                   {% translate pet.status %}
+                              </span>
+
+                         {% else %}
+
+                              <span class="status-cancelled">
+                                   {% translate pet.status %}
+                              </span>
+
+                         {% endif %}
+
+                   </td>     
 
                     <td class="actions">
 
-                        <a href="{% url 'request_edit' pet.id %}" class="edit-btn">
-                            Request Edit
-                        </a>
+                        {% if pet.status == "Waiting" %}
+                            <a href="{% url 'mark_arrived' pet.id %}" class="arrive-btn">
+                                  {% translate "Arrived" %}
+                            </a>
 
-                    </td>
+                            <a href="{% url 'mark_cancelled' pet.id %}" class="cancel-btn">
+                                  {% translate "Cancel" %}
+                            </a>
+                        {% endif %}         
+
+                            <a href="{% url 'request_edit' pet.id %}" class="edit-btn">
+                                  {% translate "Request Edit" %}
+                            </a>
+                   </td>           
 
                 </tr>
 
             {% empty %}
 
                 <tr>
-                    <td colspan="10">
-                        No pets found.
+                    <td colspan="12">
+                          {% translate "No pets found." %}
                     </td>
                 </tr>
 

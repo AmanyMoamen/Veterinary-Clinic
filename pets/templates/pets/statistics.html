@@ -1,11 +1,15 @@
-{% load static %}
+{% load static i18n %}
 
 <!DOCTYPE html>
-<html>
+<html lang="{{ LANGUAGE_CODE }}">
 
 <head>
 
-    <title>Clinic Statistics</title>
+    <meta charset="UTF-8">
+
+    <title>
+        {% translate "Clinic Statistics" %}
+    </title>
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
@@ -15,37 +19,118 @@
 
 <div class="container">
 
-    <div style="text-align:center; margin-bottom:30px;">
 
-        <img src="{% static 'images/logo.png' %}" alt="PetCare Logo" width="180">
+    <!-- Language Switcher -->
 
-        <h1>PetCare Veterinary Clinic</h1>
+    <div style="text-align:right; margin-bottom:20px;">
 
-        <p class="logo-text">
-            Healthy Pets, Happier Families
-        </p>
+        <form action="{% url 'set_language' %}"
+              method="post"
+              style="display:inline;">
+
+            {% csrf_token %}
+
+            <input type="hidden"
+                   name="next"
+                   value="{{ request.get_full_path }}">
+
+            <button type="submit"
+                    name="language"
+                    value="ar"
+                    style="background:none;
+                           border:none;
+                           color:#008acb;
+                           cursor:pointer;
+                           font-size:16px;">
+
+                العربية
+
+            </button>
+
+        </form>
+
+
+        <span style="color:#777;">|</span>
+
+
+        <form action="{% url 'set_language' %}"
+              method="post"
+              style="display:inline;">
+
+            {% csrf_token %}
+
+            <input type="hidden"
+                   name="next"
+                   value="{{ request.get_full_path }}">
+
+            <button type="submit"
+                    name="language"
+                    value="en"
+                    style="background:none;
+                           border:none;
+                           color:#008acb;
+                           cursor:pointer;
+                           font-size:16px;">
+
+                English
+
+            </button>
+
+        </form>
 
     </div>
 
-    <h2 class="section-title">Clinic Statistics</h2>
+
+    <!-- Logo -->
+
+    <div style="text-align:center; margin-bottom:10px;">
+
+        <img src="{% static 'images/logo.png' %}"
+             alt="{% translate 'Clinic Logo' %}"
+             width="240">
+
+    </div>
+
+
+    <!-- Page Title -->
+
+    <h2 class="section-title">
+
+        {% translate "Clinic Statistics" %}
+
+    </h2>
+
 
     <!-- Total Pets -->
 
     <div class="stats-card">
 
-        <h2>Total Pets</h2>
+        <h2>
+
+            {% translate "Total Pets" %}
+
+        </h2>
+
 
         <div class="stats-number">
+
             {{ total_pets }}
+
         </div>
 
     </div>
+
 
     <!-- Pets by Species -->
 
     <div class="stats-card">
 
-        <h2>Pets by Species</h2>
+        <h2>
+
+            {% translate "Pets by Species" %}
+
+        </h2>
+
 
         <ul class="stats-list">
 
@@ -53,9 +138,13 @@
 
             <li>
 
-                <strong>{{ item.species }}</strong>
+                <strong>
+                    {{ item.species }}
+                </strong>
 
-                <span>{{ item.total }}</span>
+                <span>
+                    {{ item.total }}
+                </span>
 
             </li>
 
@@ -65,13 +154,75 @@
 
     </div>
 
+
+    <!-- Appointment Status -->
+
+    <div class="stats-card">
+
+        <h2>
+
+            {% translate "Appointment Status" %}
+
+        </h2>
+
+
+        <ul class="stats-list">
+
+            <li>
+
+                <strong>
+                    {% translate "Waiting" %}
+                </strong>
+
+                <span class="waiting-count">
+                    {{ waiting }}
+                </span>
+
+            </li>
+
+
+            <li>
+
+                <strong>
+                    {% translate "Arrived" %}
+                </strong>
+
+                <span class="arrived-count">
+                    {{ arrived }}
+                </span>
+
+            </li>
+
+
+            <li>
+
+                <strong>
+                    {% translate "Cancelled" %}
+                </strong>
+
+                <span class="cancelled-count">
+                    {{ cancelled }}
+                </span>
+
+            </li>
+
+        </ul>
+
+    </div>
+
+
+    <!-- Back Button -->
+
     <div style="text-align:center; margin-top:25px;">
 
         <a href="{% url 'pet_list' %}" class="back-btn">
-            Back to Pets List
+
+            {% translate "Back to Pets List" %}
+
         </a>
 
     </div>
+
 
 </div>
 

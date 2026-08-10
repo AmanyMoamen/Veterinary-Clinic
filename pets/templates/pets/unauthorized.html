@@ -1,0 +1,115 @@
+{% load static i18n %}
+
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+
+<head>
+
+    <title>
+        {% translate "Unauthorized | PetCare Veterinary Clinic" %}
+    </title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Language Switcher -->
+    <div style="text-align:right; margin-bottom:20px;">
+
+        <form action="{% url 'set_language' %}"
+              method="post"
+              style="display:inline;">
+
+            {% csrf_token %}
+
+            <input type="hidden"
+                   name="next"
+                   value="{{ request.get_full_path }}">
+
+            <button type="submit"
+                    name="language"
+                    value="ar"
+                    style="background:none;
+                           border:none;
+                           color:#008acb;
+                           cursor:pointer;
+                           font-size:16px;">
+
+                العربية
+
+            </button>
+
+        </form>
+
+        <span style="color:#777;">|</span>
+
+        <form action="{% url 'set_language' %}"
+              method="post"
+              style="display:inline;">
+
+            {% csrf_token %}
+
+            <input type="hidden"
+                   name="next"
+                   value="{{ request.get_full_path }}">
+
+            <button type="submit"
+                    name="language"
+                    value="en"
+                    style="background:none;
+                           border:none;
+                           color:#008acb;
+                           cursor:pointer;
+                           font-size:16px;">
+
+                English
+
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <div style="text-align:center; margin-bottom:20px;">
+
+        <img src="{% static 'images/logo.png' %}"
+             alt="{% translate 'Clinic Logo' %}"
+             width="240">
+
+    </div>
+
+
+    <h2 class="section-title">
+
+        {% translate "Access Denied" %}
+
+    </h2>
+
+
+    <div class="error-box">
+
+        {% translate "You are not authorized to access this page." %}
+
+    </div>
+
+
+    <div style="text-align:center;">
+
+        <a href="{% url 'logout' %}" class="back-btn">
+
+            {% translate "Logout" %}
+
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

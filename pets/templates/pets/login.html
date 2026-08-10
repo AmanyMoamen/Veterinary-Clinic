@@ -1,0 +1,292 @@
+﻿{% load static %}
+{% load i18n %}
+
+{% get_current_language as LANGUAGE_CODE %}
+
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_CODE == 'ar' %}rtl{% else %}ltr{% endif %}">
+
+<head>
+
+    <title>{% translate "Login" %} | PetCare Veterinary Clinic</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <style>
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #eaf6f6, #f5f9fc);
+            font-family: Arial, sans-serif;
+        }
+
+        .login-container {
+            width: 420px;
+            background: white;
+            padding: 40px 45px;
+            border-radius: 18px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            box-sizing: border-box;
+        }
+
+        .language-container {
+            text-align: end;
+            margin-bottom: 15px;   
+        }
+
+        .language-button {
+            border: none;
+            background: none;
+            color: #2471a3;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .language-button:hover {
+            color: #1b4f72;
+            text-decoration: underline;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-container img {
+            width: 180px;
+            height: auto;
+        }
+
+        .clinic-title {
+            text-align: center;
+            color: #2471a3;
+            font-size: 26px;
+            margin: 10px 0 8px;
+        }
+
+        .login-title {
+            text-align: center;
+            color: #555;
+            font-size: 20px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 13px 15px;
+            border: 1px solid #ccd6dd;
+            border-radius: 8px;
+            font-size: 15px;
+            box-sizing: border-box;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: #2471a3;
+            box-shadow: 0 0 0 3px rgba(36, 113, 163, 0.12);
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #2471a3;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .login-button:hover {
+            background: #1b4f72;
+        }
+
+        .error-box {
+            background: #fdecea;
+            color: #c0392b;
+            border: 1px solid #f5b7b1;
+            padding: 10px;
+            border-radius: 7px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #888;
+            font-size: 13px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <!-- Language Switcher -->
+        <div class="language-container">
+
+            <form action="{% url 'set_language' %}" method="post">
+
+                {% csrf_token %}
+
+                <input type="hidden" name="next" value="{{ request.path }}">
+
+                {% if LANGUAGE_CODE == 'ar' %}
+
+                    <button
+                        type="submit"
+                        name="language"
+                        value="en"
+                        class="language-button">
+                        English
+                    </button>
+
+                {% else %}
+
+                    <button
+                        type="submit"
+                        name="language"
+                        value="ar"
+                        class="language-button">
+                        العربية
+                    </button>
+
+                {% endif %}
+
+            </form>
+
+        </div>
+
+
+        <!-- Logo -->
+        <div class="logo-container">
+
+            <img
+                src="{% static 'images/logo.png' %}"
+                alt="PetCare Veterinary Clinic Logo"
+            >
+
+        </div>
+
+
+        <!-- Clinic Name -->
+        <h1 class="clinic-title">
+
+            {% translate "PetCare Veterinary Clinic" %}
+
+        </h1>
+
+
+        <!-- Login Title -->
+        <h2 class="login-title">
+
+            {% translate "Login" %}
+
+        </h2>
+
+
+        <!-- Error Message -->
+        {% if error %}
+
+            <div class="error-box">
+
+                {{ error }}
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- Login Form -->
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <!-- Username -->
+            <div class="form-group">
+
+                <label for="username">
+
+                    {% translate "Username" %}
+
+                </label>
+
+                <input
+                    type="text"
+                    name="username"
+                    id="username"
+                    placeholder="{% translate 'Enter username' %}"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Password -->
+            <div class="form-group">
+
+                <label for="password">
+
+                    {% translate "Password" %}
+
+                </label>
+
+                <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    placeholder="{% translate 'Enter password' %}"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Login Button -->
+            <button
+                type="submit"
+                class="login-button">
+
+                {% translate "Login" %}
+
+            </button>
+
+        </form>
+
+
+        <!-- Footer -->
+        <div class="login-footer">
+
+            PetCare Veterinary Clinic
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

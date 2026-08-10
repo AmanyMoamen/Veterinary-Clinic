@@ -1,11 +1,17 @@
-{% load static %}
+﻿{% load static i18n %}
 
 <!DOCTYPE html>
-<html>
+<html lang="{{ LANGUAGE_CODE }}">
 
 <head>
 
-    <title>Doctor Dashboard</title>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% translate "Doctor Dashboard" %}
+    </title>
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
@@ -15,55 +21,281 @@
 
 <div class="container">
 
-    <h1>Doctor Dashboard</h1>
+    <!-- Language Switcher -->
+    <div style="text-align:right; margin-bottom:20px;">
 
-    <h3 style="text-align:center;">
-        Today's Appointments - {{ today }}
-    </h3>
+        <form action="{% url 'set_language' %}"
+              method="post"
+              style="display:inline;">
+
+            {% csrf_token %}
+
+            <input type="hidden"
+                   name="next"
+                   value="{{ request.get_full_path }}">
+
+            <button type="submit"
+                    name="language"
+                    value="ar"
+                    style="background:none;
+                           border:none;
+                           color:#008acb;
+                           cursor:pointer;
+                           font-size:16px;">
+
+                العربية
+
+            </button>
+
+        </form>
+
+        <span style="color:#777;">|</span>
+
+        <form action="{% url 'set_language' %}"
+              method="post"
+              style="display:inline;">
+
+            {% csrf_token %}
+
+            <input type="hidden"
+                   name="next"
+                   value="{{ request.get_full_path }}">
+
+            <button type="submit"
+                    name="language"
+                    value="en"
+                    style="background:none;
+                           border:none;
+                           color:#008acb;
+                           cursor:pointer;
+                           font-size:16px;">
+
+                English
+
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- Logo -->
+    <div style="text-align:center; margin-bottom:10px;">
+
+        <img src="{% static 'images/logo.png' %}"
+             alt="{% translate 'Clinic Logo' %}"
+             width="240">
+
+    </div>
+
+
+    <!-- Main Title -->
+    <h1 style="text-align:center;">
+
+        {% translate "Doctor Dashboard" %}
+
+    </h1>
+
+
+    <div class="dashboard-header">
+
+        <div class="dashboard-title">
+
+            {% if filter == "all" %}
+
+                <h2 class="page-title">
+                    {% translate "All Appointments" %}
+                </h2>
+
+            {% elif filter == "week" %}
+
+                <h2 class="page-title">
+                    {% translate "This Week Appointments" %}
+                </h2>
+
+            {% else %}
+
+                <h2 class="page-title">
+
+                    {% translate "Today's Appointments" %}
+
+                    <span class="date-badge">
+                        {{ today }}
+                    </span>
+
+                </h2>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- Filter Buttons -->
+        <div class="filter-buttons">
+
+            <a href="?filter=all"
+               class="{% if filter == 'all' %}active-all{% endif %}">
+
+                {% translate "All" %}
+
+            </a>
+
+
+            <a href="?filter=today"
+               class="{% if filter == 'today' %}active-today{% endif %}">
+
+                {% translate "Today" %}
+
+            </a>
+
+
+            <a href="?filter=week"
+               class="{% if filter == 'week' %}active-week{% endif %}">
+
+                {% translate "This Week" %}
+
+            </a>
+
+        </div>
+
+    </div>
+
 
     {% for item in dashboard %}
 
-        <div class="details-box" style="margin-bottom:30px;">
+        <div class="details-box"
+             style="margin-bottom:30px;">
 
-            <h2>{{ item.doctor }}</h2>
+            <!-- Doctor Header -->
+            <div class="doctor-header">
 
-            <p>
-                <strong>Total Appointments:</strong>
-                {{ item.count }}
-            </p>
+                <h2>
+                    {{ item.doctor }}
+                </h2>
 
-            <table border="1" cellpadding="8" cellspacing="0" width="100%">
+
+                <div class="appointments-count">
+
+                    {% translate "Total Appointments" %}
+
+                    <span>
+                        {{ item.count }}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <table border="1"
+                   cellpadding="8"
+                   cellspacing="0"
+                   width="100%">
 
                 <tr>
-                    <th>Appointment No.</th>
-                    <th>Time</th>
-                    <th>Pet Name</th>
-                    <th>Priority</th>
-                    <th>Visit Reason</th>
+
+                    <th>
+                        {% translate "Appointment No." %}
+                    </th>
+
+                    <th>
+                        {% translate "Time" %}
+                    </th>
+
+                    <th>
+                        {% translate "Pet Name" %}
+                    </th>
+
+                    <th>
+                        {% translate "Priority" %}
+                    </th>
+
+                    <th>
+                        {% translate "Visit Reason" %}
+                    </th>
+
                 </tr>
+
 
                 {% for pet in item.appointments %}
 
                 <tr>
 
-                    <td>{{ pet.appointment_number }}</td>
+                    <td>
+                        {{ pet.appointment_number }}
+                    </td>
 
-                    <td>{{ pet.appointment_time }}</td>
 
-                    <td>{{ pet.name }}</td>
+                    <td>
+                        {{ pet.appointment_time }}
+                    </td>
 
-                    <td>{{ pet.priority }}</td>
 
-                    <td>{{ pet.visit_reason }}</td>
+                    <td>
+                        {{ pet.name }}
+                    </td>
+
+
+                    <td>
+
+                        {% if pet.priority == "Emergency" %}
+
+                            <span style="background:#dc3545;
+                                         color:white;
+                                         padding:5px 10px;
+                                         border-radius:5px;">
+
+                                {% translate "Emergency" %}
+
+                            </span>
+
+
+                        {% elif pet.priority == "Urgent" %}
+
+                            <span style="background:#fd7e14;
+                                         color:white;
+                                         padding:5px 10px;
+                                         border-radius:5px;">
+
+                                {% translate "Urgent" %}
+
+                            </span>
+
+
+                        {% else %}
+
+                            <span style="background:#28a745;
+                                         color:white;
+                                         padding:5px 10px;
+                                         border-radius:5px;">
+
+                                {% translate "Normal" %}
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <td>
+                        {{ pet.visit_reason }}
+                    </td>
 
                 </tr>
+
 
                 {% empty %}
 
                 <tr>
-                    <td colspan="5" style="text-align:center;">
-                        No appointments today.
+
+                    <td colspan="5"
+                        style="text-align:center;">
+
+                        {% translate "No appointments found." %}
+
                     </td>
+
                 </tr>
 
                 {% endfor %}
@@ -74,13 +306,19 @@
 
     {% endfor %}
 
-    <div style="text-align:center;">
 
-        <a href="{% url 'pet_list' %}" class="back-btn">
-            Back to Home
+    <!-- Back Button -->
+    <div class="back-home">
+
+        <a href="{% url 'pet_list' %}"
+           class="back-btn">
+
+            {% translate "Back to Home" %}
+
         </a>
 
     </div>
+
 
 </div>
 

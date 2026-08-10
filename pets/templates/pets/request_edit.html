@@ -1,11 +1,13 @@
-{% load static %}
+{% load static i18n %}
 
 <!DOCTYPE html>
-<html>
+<html lang="{{ LANGUAGE_CODE }}">
 
 <head>
 
-    <title>Request Edit | PetCare Veterinary Clinic</title>
+    <title>
+        {% translate "Request Edit" %} | {% translate "PetCare Veterinary Clinic" %}
+    </title>
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
@@ -14,50 +16,272 @@
 <body>
 
 <div class="container">
+    <!-- Language Switcher -->
+<div style="text-align:right; margin-bottom:20px;">
 
-    <div style="text-align:center; margin-bottom:30px;">
-
-        <img src="{% static 'images/logo.png' %}" alt="PetCare Logo" width="180">
-
-        <h1>PetCare Veterinary Clinic</h1>
-
-        <p class="logo-text">
-            Healthy Pets, Happier Families
-        </p>
-
-    </div>
-
-    <h2 class="section-title">
-        Edit Request
-    </h2>
-
-    <p style="text-align:center; font-size:22px; margin-bottom:30px;">
-       <span style="font-weight:bold; color:#2E86DE;">Pet:</span>
-       <span style="font-weight:600; color:#1B4F72;">{{ pet.name }}</span>
-    </p>
-    <form method="POST">
+    <form action="{% url 'set_language' %}"
+          method="post"
+          style="display:inline;">
 
         {% csrf_token %}
 
-        {{ form.as_p }}
+        <input type="hidden"
+               name="next"
+               value="{{ request.get_full_path }}">
 
-        <button type="submit">
-            Submit Request
+        <button type="submit"
+                name="language"
+                value="ar"
+                style="background:none;
+                       border:none;
+                       color:#008acb;
+                       cursor:pointer;
+                       font-size:16px;">
+
+            العربية
+
         </button>
 
     </form>
 
+    <span style="color:#777;">|</span>
+
+    <form action="{% url 'set_language' %}"
+          method="post"
+          style="display:inline;">
+
+        {% csrf_token %}
+
+        <input type="hidden"
+               name="next"
+               value="{{ request.get_full_path }}">
+
+        <button type="submit"
+                name="language"
+                value="en"
+                style="background:none;
+                       border:none;
+                       color:#008acb;
+                       cursor:pointer;
+                       font-size:16px;">
+
+            English
+
+        </button>
+
+    </form>
+
+</div>
+
+    <div style="text-align:center; margin-bottom:10px;">
+
+        <img src="{% static 'images/logo.png' %}"
+             alt="{% translate 'Clinic Logo' %}"
+             width="240">
+
+    </div>
+
+
+    <h2 class="section-title">
+        {% translate "Edit Request" %}
+    </h2>
+
+
+    <p style="text-align:center; font-size:22px; margin-bottom:30px;">
+
+        <span style="font-weight:bold; color:#2E86DE;">
+            {% translate "Pet" %}:
+        </span>
+
+        <span style="font-weight:600; color:#1B4F72;">
+            {{ pet.name }}
+        </span>
+
+    </p>
+
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+
+        <p>
+            {{ form.edit_type.label_tag }}
+            {{ form.edit_type }}
+        </p>
+
+
+        <p>
+            {{ form.reason.label_tag }}
+            {{ form.reason }}
+        </p>
+
+
+        <div id="visit_date_field" style="display:none;">
+
+            <p>
+                {{ form.new_visit_date.label_tag }}
+                {{ form.new_visit_date }}
+            </p>
+
+        </div>
+
+
+        <div id="appointment_time_field" style="display:none;">
+
+            <p>
+                {{ form.new_appointment_time.label_tag }}
+                {{ form.new_appointment_time }}
+            </p>
+
+        </div>
+
+
+        <div id="doctor_field" style="display:none;">
+
+            <p>
+                {{ form.new_doctor.label_tag }}
+                {{ form.new_doctor }}
+            </p>
+
+        </div>
+
+
+        <div id="phone_field" style="display:none;">
+
+            <p>
+                {{ form.new_owner_phone.label_tag }}
+                {{ form.new_owner_phone }}
+            </p>
+
+        </div>
+
+
+        <div id="reason_field" style="display:none;">
+
+            <p>
+                {{ form.new_visit_reason.label_tag }}
+                {{ form.new_visit_reason }}
+            </p>
+
+        </div>
+
+
+        <div id="pet_name_field" style="display:none;">
+
+            <p>
+                {{ form.new_pet_name.label_tag }}
+                {{ form.new_pet_name }}
+            </p>
+
+        </div>
+
+
+        <div id="priority_field" style="display:none;">
+
+            <p>
+                {{ form.new_priority.label_tag }}
+                {{ form.new_priority }}
+            </p>
+
+        </div>
+
+
+        <button type="submit">
+            {% translate "Submit Request" %}
+        </button>
+
+    </form>
+
+
     <br>
+
 
     <div style="text-align:center;">
 
         <a href="{% url 'pet_list' %}" class="back-btn">
-            Back to Home
+
+            {% translate "Back to Home" %}
+
         </a>
 
     </div>
 
 </div>
+
+
+<script>
+
+function hideAllFields() {
+
+    document.getElementById("visit_date_field").style.display = "none";
+    document.getElementById("appointment_time_field").style.display = "none";
+    document.getElementById("doctor_field").style.display = "none";
+    document.getElementById("phone_field").style.display = "none";
+    document.getElementById("reason_field").style.display = "none";
+    document.getElementById("pet_name_field").style.display = "none";
+    document.getElementById("priority_field").style.display = "none";
+
+}
+
+function toggleFields() {
+
+    hideAllFields();
+
+    let value = document.getElementById("id_edit_type").value;
+
+
+    if (value === "Appointment Date") {
+
+        document.getElementById("visit_date_field").style.display = "block";
+
+    }
+
+    else if (value === "Appointment Time") {
+
+        document.getElementById("appointment_time_field").style.display = "block";
+
+    }
+
+    else if (value === "Doctor") {
+
+        document.getElementById("doctor_field").style.display = "block";
+
+    }
+
+    else if (value === "Owner Phone") {
+
+        document.getElementById("phone_field").style.display = "block";
+
+    }
+
+    else if (value === "Visit Reason") {
+
+        document.getElementById("reason_field").style.display = "block";
+
+    }
+
+    else if (value === "Pet Name") {
+
+        document.getElementById("pet_name_field").style.display = "block";
+
+    }
+
+    else if (value === "Priority") {
+
+        document.getElementById("priority_field").style.display = "block";
+
+    }
+
+}
+
+
+document.getElementById("id_edit_type")
+    .addEventListener("change", toggleFields);
+
+window.onload = toggleFields;
+
+</script>
 
 </body>
 

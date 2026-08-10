@@ -1,67 +1,138 @@
-{% load static %}
+{% load static i18n %}
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Available Appointment Times</title>
+
+    <meta charset="UTF-8">
+
+    <title>
+        {% translate "Available Appointment Times" %}
+    </title>
+
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
 </head>
 
 <body>
 
 <div class="container">
 
-    <div style="text-align:center; margin-bottom:30px;">
+    <!-- Language Switcher -->
+    <div style="text-align:right; margin-bottom:20px;">
 
-        <img src="{% static 'images/logo.png' %}" alt="PetCare Logo" width="180">
+        <form action="{% url 'set_language' %}" method="post" style="display:inline;">
+            {% csrf_token %}
 
-        <h1>PetCare Veterinary Clinic</h1>
+            <input type="hidden"
+                   name="next"
+                   value="{{ request.get_full_path }}">
 
-        <p class="logo-text">
-            Healthy Pets, Happier Families
+            <button type="submit"
+                    name="language"
+                    value="ar"
+                    style="background:none; border:none; color:#008acb; cursor:pointer; font-size:16px;">
+                العربية
+            </button>
+
+        </form>
+
+        <span style="color:#777;">|</span>
+
+        <form action="{% url 'set_language' %}" method="post" style="display:inline;">
+            {% csrf_token %}
+
+            <input type="hidden"
+                   name="next"
+                   value="{{ request.get_full_path }}">
+
+            <button type="submit"
+                    name="language"
+                    value="en"
+                    style="background:none; border:none; color:#008acb; cursor:pointer; font-size:16px;">
+                English
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- Logo -->
+    <div style="text-align:center; margin-bottom:10px;">
+
+        <img src="{% static 'images/logo.png' %}"
+             alt="{% translate 'Clinic Logo' %}"
+             width="240">
+
+    </div>
+
+
+    <!-- Page Title -->
+    <h2 class="section-title">
+
+        {% translate "Available Appointment Times" %}
+
+    </h2>
+
+
+    <!-- Doctor & Date -->
+    <div class="details-box">
+
+        <p>
+            <strong>{% translate "Doctor" %}:</strong>
+            {{ doctor }}
+        </p>
+
+        <p>
+            <strong>{% translate "Date" %}:</strong>
+            {{ visit_date }}
         </p>
 
     </div>
 
-    <h2 class="section-title">Available Appointment Times</h2>
-
-    <div class="details-box">
-
-        <p><strong>Doctor:</strong> {{ doctor }}</p>
-
-        <p><strong>Date:</strong> {{ visit_date }}</p>
-
-    </div>
 
     {% if available %}
 
-    <div class="details-box">
+        <div class="details-box">
 
-        <h3>Available Times</h3>
+            <h3>
+                {% translate "Available Times" %}
+            </h3>
 
-        <ul class="times-list">
+            <ul class="times-list">
 
-            {% for time in available %}
-                <li>{{ time }}</li>
-            {% endfor %}
+                {% for time in available %}
 
-        </ul>
+                    <li>
+                        {{ time }}
+                    </li>
 
-    </div>
+                {% endfor %}
+
+            </ul>
+
+        </div>
 
     {% else %}
 
-    <div class="error-box">
-        No available appointments for this day.
-    </div>
+        <div class="error-box">
+
+            {% translate "No available appointments for this day." %}
+
+        </div>
 
     {% endif %}
 
+
+    <!-- Back Button -->
     <div style="text-align:center; margin-top:25px;">
 
         <a href="{% url 'pet_list' %}" class="back-btn">
-            Back to Pets List
+
+            {% translate "Back to Pets List" %}
+
         </a>
 
     </div>

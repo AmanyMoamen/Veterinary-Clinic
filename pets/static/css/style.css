@@ -143,7 +143,6 @@ ul{
 
 table{
     width:100%;
-    min-width:1200px;
     border-collapse:collapse;
     margin-top:20px;
 }
@@ -151,16 +150,16 @@ table{
 table th{
     background:#0d6efd;
     color:white;
-    padding:12px;
+    padding:8px;
+    font-size:14px;
     text-align:center;
-    white-space:nowrap;
 }
 
 table td{
     border:1px solid #ddd;
-    padding:10px;
+    padding:8px;
+    font-size:14px;
     text-align:center;
-    white-space:nowrap;
 }
 
 table tr:nth-child(even){
@@ -326,3 +325,394 @@ table tr:hover{
     text-align:center;
     margin-bottom:20px;
 }
+
+/* ================= DOCTOR DASHBOARD ================= */
+
+.dashboard-header{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    margin:25px 0;
+}
+
+.dashboard-title{
+    width:100%;
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.filter-buttons{
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    margin-top:10px;
+}
+
+.filter-buttons a{
+    display:inline-block;
+    background:#0d6efd;
+    color:white !important;
+    padding:10px 22px;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:bold;
+    transition:.3s;
+}
+
+.filter-buttons a:hover{
+    background:#084298;
+}
+.active-all{
+    background:#0d6efd !important;
+    color:#fff !important;
+}
+
+.active-today{
+    background:#198754 !important;
+    color:#fff !important;
+}
+
+.active-week{
+    background:#fd7e14 !important;
+    color:#fff !important;
+}
+
+.page-title{
+    color:#0d6efd;
+    margin:0;
+}
+
+.date-badge{
+    background:#0d6efd;
+    color:#fff;
+    padding:4px 10px;
+    border-radius:15px;
+    font-size:14px;
+    margin-left:10px;
+}
+
+.doctor-header{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    margin-bottom:22px;
+    flex-wrap:wrap;
+}
+
+.appointments-count{
+    margin-left:10px;
+    background:#eef4ff;
+    color:#0d6efd;
+    padding:10px 18px;
+    border-radius:20px;
+    font-size:14px;
+    font-weight:bold;
+}
+
+.appointments-count span{
+    background:#198754;
+    color:white;
+    border-radius:50%;
+    padding:5px 10px;
+    margin-left:8px;
+}
+.back-home{
+    text-align:center;
+    margin-top:30px;
+}
+
+/* ================= STATUS BUTTONS ================= */
+
+.arrive-btn{
+    display:inline-block;
+    background:#198754;
+    color:white !important;
+    padding:8px 14px;
+    border-radius:6px;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:bold;
+    margin-bottom:6px;
+    transition:.3s;
+}
+
+.arrive-btn:hover{
+    background:#157347;
+}
+
+.cancel-btn{
+    display:inline-block;
+    background:#dc3545;
+    color:white !important;
+    padding:8px 14px;
+    border-radius:6px;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:bold;
+    margin-left:5px;
+    margin-bottom:6px;
+    transition:.3s;
+}
+
+.cancel-btn:hover{
+    background:#bb2d3b;
+}
+
+/* ================= STATUS COLORS ================= */
+
+.status-waiting{
+    color:orange !important;
+    font-size:16px;
+    font-weight:bold;
+}
+
+.status-arrived{
+    color:green !important;
+    font-size:16px;
+    font-weight:bold;
+}
+
+.status-cancelled{
+    color: red !important;
+    font-size:16px;
+    font-weight:bold;
+}
+
+/* ================= ACTION BUTTONS ================= */
+
+.actions{
+    white-space: nowrap;
+    text-align: center;
+}
+
+.arrive-btn,
+.cancel-btn,
+.edit-btn{
+    display:inline-block;
+    padding:5px 8px;
+    margin:2px;
+    font-size:11px;
+    border-radius:5px;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.arrive-btn{
+    background:#198754;
+    color:white !important;
+}
+
+.cancel-btn{
+    background:#dc3545;
+    color:white !important;
+}
+
+.edit-btn{
+    background:#ffc107;
+    color:black !important;
+}
+
+/* Statistics Status Colors */
+
+.waiting-count{
+    background: orange !important;
+    color: white !important;
+}
+
+.arrived-count{
+    background: #198754 !important;
+    color: white !important;
+}
+
+.cancelled-count{
+    background: #dc3545 !important;
+    color: white !important;
+}
+
+/* Dashboard Text Color */
+.details-box table td{
+    color: black;
+}
+
+/* ================= RESPONSIVE DESIGN ================= */
+
+/* Make sizing easier on all screen sizes */
+*{
+    box-sizing:border-box;
+}
+
+/* Make images responsive */
+img{
+    max-width:100%;
+    height:auto;
+}
+
+
+/* ================= TABLET ================= */
+
+@media (max-width: 992px){
+
+    body{
+        margin:20px;
+    }
+
+    .container{
+        width:100%;
+        padding:20px;
+    }
+
+    .dashboard-header{
+        margin:20px 0;
+    }
+
+    .doctor-header{
+        justify-content:center;
+        text-align:center;
+    }
+
+    .appointments-count{
+        margin-left:0;
+    }
+
+    .filter-buttons{
+        flex-wrap:wrap;
+    }
+
+    .details-box{
+        padding:15px;
+        overflow-x:auto;
+    }
+
+    .details-box table{
+        min-width:700px;
+    }
+
+}
+
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 600px){
+
+    body{
+        margin:10px;
+    }
+
+    .container{
+        width:100%;
+        padding:15px;
+        border-radius:8px;
+    }
+
+
+    /* Logo */
+
+    img{
+        max-width:180px;
+    }
+
+
+    /* Main Dashboard Title */
+
+    h1{
+        font-size:24px;
+    }
+
+
+    /* Dashboard Header */
+
+    .dashboard-header{
+        margin:15px 0;
+    }
+
+    .dashboard-title{
+        margin-bottom:15px;
+    }
+
+    .page-title{
+        font-size:20px;
+        line-height:1.6;
+    }
+
+
+    /* Date */
+
+    .date-badge{
+        display:inline-block;
+        margin-left:0;
+        margin-top:5px;
+        font-size:12px;
+    }
+
+
+    /* Filter Buttons */
+
+    .filter-buttons{
+        width:100%;
+        flex-direction:column;
+        gap:8px;
+        align-items:stretch;
+    }
+
+    .filter-buttons a{
+        width:100%;
+        text-align:center;
+        padding:10px;
+    }
+
+
+    /* Doctor Section */
+
+    .details-box{
+        padding:12px;
+        margin-bottom:20px;
+        overflow-x:auto;
+    }
+
+    .doctor-header{
+        flex-direction:column;
+        gap:8px;
+        margin-bottom:15px;
+    }
+
+    .doctor-header h2{
+        font-size:20px;
+        margin-bottom:5px;
+    }
+
+    .appointments-count{
+        margin-left:0;
+        padding:8px 14px;
+        font-size:13px;
+    }
+
+
+    /* Appointment Table */
+
+    .details-box table{
+        min-width:650px;
+    }
+
+    .details-box table th,
+    .details-box table td{
+        padding:7px;
+        font-size:12px;
+        white-space:nowrap;
+    }
+
+
+    /* Back Button */
+
+    .back-home{
+        margin-top:20px;
+    }
+
+    .back-btn{
+        width:100%;
+        text-align:center;
+        padding:10px;
+    }
+
+}
+

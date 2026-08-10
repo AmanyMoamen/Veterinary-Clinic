@@ -1,11 +1,11 @@
-{% load static %}
+﻿{% load static i18n %}
 
 <!DOCTYPE html>
 <html>
 
 <head>
 
-    <title>{{ title }} | PetCare Veterinary Clinic</title>
+    <title>{{ title }} | {% translate "PetCare Veterinary Clinic" %}</title>
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
@@ -15,19 +15,54 @@
 
 <div class="container">
 
-    <div style="text-align:center; margin-bottom:30px;">
+    <!-- Language Switcher -->
+    <div style="text-align:right; margin-bottom:20px;">
 
-        <img src="{% static 'images/logo.png' %}" alt="PetCare Logo" width="180">
+        <form action="{% url 'set_language' %}" method="post" style="display:inline;">
+            {% csrf_token %}
 
-        <h1>PetCare Veterinary Clinic</h1>
+            <input type="hidden" name="next" value="{{ request.get_full_path }}">
 
-        <p class="logo-text">
-            Healthy Pets, Happier Families
-        </p>
+            <button type="submit"
+                    name="language"
+                    value="ar"
+                    style="background:none; border:none; color:#008acb; cursor:pointer; font-size:16px;">
+                العربية
+            </button>
+
+        </form>
+
+        <span style="color:#777;">|</span>
+
+        <form action="{% url 'set_language' %}" method="post" style="display:inline;">
+            {% csrf_token %}
+
+            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+
+            <button type="submit"
+                    name="language"
+                    value="en"
+                    style="background:none; border:none; color:#008acb; cursor:pointer; font-size:16px;">
+                English
+            </button>
+
+        </form>
 
     </div>
 
-    <h2 class="section-title">Pet Registration Form</h2>
+    <div style="text-align:center; margin-bottom:10px;">
+
+        <img src="{% static 'images/logo.png' %}"
+             alt="{% translate 'Clinic Logo' %}"
+             width="240">
+
+    </div>
+
+
+    <h2 class="section-title">
+        {% translate "Pet Registration Form" %}
+    </h2>
+
 
     {% if error %}
     <div class="error-box">
@@ -35,29 +70,190 @@
     </div>
     {% endif %}
 
+
     <form method="POST">
 
         {% csrf_token %}
 
-        {{ form.as_p }}
+        {{ form.non_field_errors }}
+
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div style="color:red; margin:5px 0;">
+                     {{ field.label }}: {{ error }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        {{ form.name.label_tag }}
+        {{ form.name }}
+
+        {{ form.species.label_tag }}
+        {{ form.species }}
+
+        {{ form.date_of_birth.label_tag }}
+        {{ form.date_of_birth }}
+
+        {{ form.visit_date.label_tag }}
+        {{ form.visit_date }}
+
+        {{ form.visit_reason.label_tag }}
+        {{ form.visit_reason }}
+
+        {{ form.owner_name.label_tag }}
+        {{ form.owner_name }}
+
+        {{ form.owner_phone.label_tag }}
+        {{ form.owner_phone }}
+
+        {{ form.appointment_type.label_tag }}
+        {{ form.appointment_type }}
+
+        {{ form.priority.label_tag }}
+        {{ form.priority }}
+
+        {{ form.doctor.label_tag }}
+        {{ form.doctor }}
+
+        {{ form.appointment_time.label_tag }}
+
+        <div id="time-buttons"></div>
+
+        <div style="display:none;">
+            {{ form.appointment_time }}
+        </div>
+
+        <div id="time-status" style="margin-top:10px;"></div>
+
+        <div id="available-times" style="margin:20px 0;"></div>
+
 
         <button type="submit">
-            Save
+            {% translate "Save" %}
         </button>
 
     </form>
 
+
     <br>
+
 
     <div style="text-align:center;">
 
         <a href="{% url 'pet_list' %}" class="back-btn">
-             Back to Home
+            {% translate "Back to Home" %}
         </a>
 
     </div>
 
 </div>
+
+
+<script>
+
+const times = [
+    "09:00",
+    "09:30",
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "12:00",
+    "12:30",
+    "13:00",
+    "13:30",
+    "14:00",
+    "14:30",
+    "15:00"
+];
+
+const doctor = document.getElementById("id_doctor");
+const visitDate = document.getElementById("id_visit_date");
+const container = document.getElementById("time-buttons");
+
+
+function loadTimes() {
+
+    if (!doctor.value || !visitDate.value) {
+        container.innerHTML = "";
+        return;
+    }
+
+    console.log("Doctor =", doctor.value);
+    console.log("Visit Date =", visitDate.value);
+
+    fetch("/pets/available-times/?doctor=" + doctor.value + "&visit_date=" + visitDate.value)
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            container.innerHTML = "";
+
+            times.forEach(function(time){
+
+                const btn = document.createElement("button");
+
+                btn.type = "button";
+                btn.innerHTML = time;
+
+                btn.style.margin = "5px";
+                btn.style.padding = "8px 15px";
+                btn.style.border = "none";
+                btn.style.borderRadius = "5px";
+                btn.style.color = "white";
+                btn.style.cursor = "pointer";
+
+
+                console.log("Booked:", data.booked);
+                console.log("Current:", time);
+
+
+                if (data.booked.indexOf(time) !== -1) {
+
+                    btn.style.background = "#dc3545";
+                    btn.disabled = true;
+
+                } else {
+
+                    btn.style.background = "#198754";
+
+                }
+
+
+                btn.onclick = function(){
+
+                    document.getElementById("id_appointment_time").value = time;
+
+
+                    document.querySelectorAll("#time-buttons button").forEach(function(b){
+
+                        if(!b.disabled){
+                            b.style.outline = "none";
+                        }
+
+                    });
+
+
+                    btn.style.outline = "3px solid black";
+
+                };
+
+
+                container.appendChild(btn);
+
+            });
+
+        });
+
+}
+
+
+doctor.addEventListener("change", loadTimes);
+
+visitDate.addEventListener("change", loadTimes);
+
+</script>
 
 </body>
 
