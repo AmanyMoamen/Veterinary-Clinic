@@ -3,6 +3,26 @@ from django.contrib.auth.models import User
 
 
 # =========================
+# Branch
+# =========================
+
+class Branch(models.Model):
+
+    name = models.CharField(
+        max_length=100,
+        unique=True
+    )
+
+    address = models.CharField(
+        max_length=200,
+        blank=True
+    )
+
+    def __str__(self):
+        return self.name
+
+
+# =========================
 # User Profile / Roles
 # =========================
 
@@ -26,6 +46,14 @@ class UserProfile(models.Model):
         default="Receptionist"
     )
 
+    branch = models.ForeignKey(
+        Branch,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="users"
+    )
+
     def __str__(self):
         return f"{self.user.username} - {self.role}"
 
@@ -36,7 +64,9 @@ class UserProfile(models.Model):
 
 class Doctor(models.Model):
 
-    name = models.CharField(max_length=100)
+    name = models.CharField(
+        max_length=100
+    )
 
     # Link doctor to Django user account
     user = models.OneToOneField(
@@ -45,6 +75,14 @@ class Doctor(models.Model):
         null=True,
         blank=True,
         related_name="doctor"
+    )
+
+    branch = models.ForeignKey(
+        "Branch",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="doctors"
     )
 
     consultation_time = models.PositiveIntegerField(
@@ -66,9 +104,13 @@ class Doctor(models.Model):
 
 class Pet(models.Model):
 
-    name = models.CharField(max_length=100)
+    name = models.CharField(
+        max_length=100
+    )
 
-    species = models.CharField(max_length=50)
+    species = models.CharField(
+        max_length=50
+    )
 
     date_of_birth = models.DateField(
         null=True,
@@ -109,6 +151,14 @@ class Pet(models.Model):
         choices=PRIORITY_CHOICES,
         default="Normal"
     )
+   
+    branch = models.ForeignKey(
+        "Branch",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="appointments"
+    )    
 
     STATUS_CHOICES = [
         ("Waiting", "Waiting"),
@@ -119,7 +169,7 @@ class Pet(models.Model):
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
-        default="Waiting",
+        default="Waiting"
     )
 
     doctor = models.CharField(
@@ -192,7 +242,7 @@ class EditRequest(models.Model):
         null=True,
         blank=True,
         related_name="edit_requests"
-    )      
+    )
 
     edit_type = models.CharField(
         max_length=50,
@@ -237,7 +287,7 @@ class EditRequest(models.Model):
         max_length=20,
         choices=Pet.PRIORITY_CHOICES,
         blank=True,
-        null=True,
+        null=True
     )
 
     STATUS_CHOICES = [

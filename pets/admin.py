@@ -1,7 +1,30 @@
 from django.contrib import admin
-from django.contrib.auth.models import User
 
-from .models import Pet, Doctor, EditRequest, UserProfile
+from .models import (
+    Branch,
+    Pet,
+    Doctor,
+    EditRequest,
+    UserProfile,
+)
+
+
+# =========================
+# Branch Admin
+# =========================
+
+@admin.register(Branch)
+class BranchAdmin(admin.ModelAdmin):
+
+    list_display = (
+        "name",
+        "address",
+    )
+
+    search_fields = (
+        "name",
+        "address",
+    )
 
 
 # =========================
@@ -14,16 +37,19 @@ class UserProfileAdmin(admin.ModelAdmin):
     list_display = (
         "user",
         "role",
+        "branch",
     )
 
     list_filter = (
         "role",
+        "branch",
     )
 
     search_fields = (
         "user__username",
         "user__first_name",
         "user__last_name",
+        "branch__name",
     )
 
 
@@ -37,8 +63,13 @@ class DoctorAdmin(admin.ModelAdmin):
     list_display = (
         "name",
         "user",
+        "branch",
         "consultation_time",
         "max_appointments_per_day",
+    )
+
+    list_filter = (
+        "branch",
     )
 
     search_fields = (
@@ -57,6 +88,7 @@ class PetAdmin(admin.ModelAdmin):
     list_display = (
         "appointment_number",
         "name",
+        "branch",
         "doctor",
         "visit_date",
         "appointment_time",
@@ -65,6 +97,7 @@ class PetAdmin(admin.ModelAdmin):
     )
 
     list_filter = (
+        "branch",
         "priority",
         "status",
         "visit_date",
@@ -76,6 +109,8 @@ class PetAdmin(admin.ModelAdmin):
         "owner_name",
         "owner_phone",
         "appointment_number",
+        "doctor",
+        "branch__name",
     )
 
 
@@ -93,7 +128,7 @@ class EditRequestAdmin(admin.ModelAdmin):
         "reason",
         "status",
         "created_at",
-    )       
+    )
 
     list_filter = (
         "status",

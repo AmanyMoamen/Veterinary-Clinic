@@ -2,23 +2,6 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 from .models import Pet, Doctor, EditRequest
 
-
-TIME_CHOICES = [
-    ("09:00", "09:00 AM"),
-    ("09:30", "09:30 AM"),
-    ("10:00", "10:00 AM"),
-    ("10:30", "10:30 AM"),
-    ("11:00", "11:00 AM"),
-    ("11:30", "11:30 AM"),
-    ("12:00", "12:00 PM"),
-    ("12:30", "12:30 PM"),
-    ("13:00", "01:00 PM"),
-    ("13:30", "01:30 PM"),
-    ("14:00", "02:00 PM"),
-    ("14:30", "02:30 PM"),
-    ("15:00", "03:00 PM"),
-]
-
 class PetForm(forms.ModelForm):
 
     doctor = forms.ModelChoiceField(
@@ -27,15 +10,16 @@ class PetForm(forms.ModelForm):
         label=_("Doctor")
     )
 
-    appointment_time = forms.ChoiceField(
-        choices=TIME_CHOICES,
-        label=_("Appointment Time")
+    appointment_time = forms.CharField(
+        label=_("Appointment Time"),
+        required=True,
+        widget=forms.HiddenInput()
     )
 
     class Meta:
         model = Pet
 
-        exclude = ['appointment_number', 'status']
+        exclude = ['appointment_number', 'status', 'branch']
 
         labels = {
             'name': _('Name'),
@@ -59,6 +43,42 @@ class PetForm(forms.ModelForm):
             ),
         }
 
+    def __init__(self, *args, user=None, **kwargs):
+
+        super().__init__(*args, **kwargs)
+
+        # =========================
+        # Filter Doctors by Branch
+        # =========================
+
+        if user and hasattr(user, "profile"):
+
+            profile = user.profile
+
+            # Admin can see all doctors
+            if profile.role == "Admin":
+
+                self.fields["doctor"].queryset = (
+                    Doctor.objects.all()
+                )
+
+            # Receptionist can see doctors
+            # from their branch only
+            elif profile.role == "Receptionist":
+
+                if profile.branch:
+
+                    self.fields["doctor"].queryset = (
+                        Doctor.objects.filter(
+                            branch=profile.branch
+                        )
+                    )
+
+                else:
+
+                    self.fields["doctor"].queryset = (
+                        Doctor.objects.none()
+                    )
 
 class EditRequestForm(forms.ModelForm):
 

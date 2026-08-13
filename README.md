@@ -22,6 +22,30 @@ The system provides different roles and permissions for Admins, Receptionists, a
 
 ---
 
+### Branch Management
+
+The system supports multiple veterinary clinic branches.
+
+Currently supported branches include:
+
+- Cairo Branch
+- Alexandria Branch
+- Minia Branch
+
+Each doctor is assigned to a specific branch, and each receptionist is also assigned to a specific branch.
+
+#### Branch-Based Access
+
+- Receptionists can view and book appointments with doctors belonging to their assigned branch only.
+- Doctors are associated with their assigned branch.
+- Admins can view and manage doctors, receptionists, appointments, and data across all branches.
+- Doctors can be filtered by branch through the Django Admin Panel.
+- Appointments are associated with the corresponding branch.
+
+This ensures that each branch manages its own doctors and appointments while the Admin has access to all branches.
+
+---
+
 ### Pet & Appointment Management
 
 - Add new pet appointments
@@ -33,6 +57,7 @@ The system provides different roles and permissions for Admins, Receptionists, a
 - Add visit reason
 - Add owner information
 - Generate automatic appointment numbers
+- Associate appointments with the appropriate clinic branch
 
 Example:
 
@@ -147,15 +172,22 @@ The Django Admin Panel is used to manage:
 
 - Users
 - User Profiles
+- Branches
 - Doctors
 - Pets
 - Edit Requests
+- Appointments
 
 Admins can:
 
 - Manage users and roles
+- Manage clinic branches
+- Assign doctors to branches
+- Assign receptionists to branches
 - Manage doctors
+- View doctors by branch
 - View and filter appointments
+- View appointments across all branches
 - Review edit requests
 - Approve or reject edit requests
 - Monitor appointment information
@@ -263,32 +295,38 @@ git clone https://github.com/AmanyMoamen/Veterinary-Clinic.git
       Visit:
       http://127.0.0.1:8000/pets/
 
-Main System Roles
+### Main System Roles
 
-. Admin
+### Admin
 
-. Manage users
-. Manage doctors
-. Manage pets and appointments
-. Review edit requests
-. Approve or reject edit requests
-. View statistics
+- Manage users
+- Manage roles
+- Manage clinic branches
+- Assign doctors to branches
+- Assign receptionists to branches
+- Manage doctors
+- Manage pets and appointments across all branches
+- Review edit requests
+- Approve or reject edit requests
+- View statistics
 
-Receptionist
+### Receptionist
 
-. Add appointments
-. Manage pets
-. View appointments
-. Filter appointments
-. Submit edit requests
-. Manage appointment status
+- Add appointments
+- Manage pets
+- View appointments
+- View doctors in the assigned branch
+- Filter appointments
+- Submit edit requests
+- Manage appointment status
 
-Doctor
+### Doctor
 
-. Access Doctor Dashboard
-. View appointments
-. Filter appointments by date
-. View appointment details and priorities
+- Access Doctor Dashboard
+- View appointments
+- Filter appointments by date
+- View appointment details and priorities
+- View appointments related to the doctor's branch
 
 Developed By
 Amany Moamen

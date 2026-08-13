@@ -117,7 +117,6 @@ def pet_list(request):
         "appointment_time"
     )
 
-    # Get all doctors
     doctors = Doctor.objects.all()
 
     filter_type = request.GET.get("filter")
@@ -168,8 +167,13 @@ def pet_list(request):
 
     if doctor:
 
+        selected_doctor = get_object_or_404(
+            Doctor,
+            id=doctor
+        )
+
         pets = pets.filter(
-            doctor_id=doctor
+            doctor=selected_doctor.name
         )
 
     return render(
@@ -191,7 +195,10 @@ def add_pet(request):
 
     if request.method == "POST":
 
-        form = PetForm(request.POST)
+        form = PetForm(
+            request.POST,
+            user=request.user
+        )
 
         if form.is_valid():
 
@@ -199,17 +206,57 @@ def add_pet(request):
 
             visit_date = form.cleaned_data["visit_date"]
 
-            appointment_time = datetime.strptime(
-                form.cleaned_data["appointment_time"],
-                "%H:%M"
-            ).time()
+            # =========================
+            # Get Doctor Branch
+            # =========================
+
+            branch = doctor.branch
+
+            # =========================
+            # Make Sure Doctor Has Branch
+            # =========================
+
+            if not branch:
+
+                return render(
+                    request,
+                    "pets/add_pet.html",
+                    {
+                        "form": form,
+                        "error": (
+                            "This doctor is not assigned "
+                            "to any branch."
+                        )
+                    }
+                )
+
+            # =========================
+            # Appointment Time
+            # =========================
+
+            appointment_time = form.cleaned_data[
+                "appointment_time"
+            ]
+
+            # Convert string to datetime.time
+            if isinstance(appointment_time, str):
+
+                appointment_time_obj = datetime.strptime(
+                    appointment_time,
+                    "%H:%M"
+                ).time()
+
+            else:
+
+                appointment_time_obj = appointment_time
 
             # =========================
             # Maximum Appointments
             # =========================
 
             appointments_count = Pet.objects.filter(
-                doctor=doctor,
+                doctor=doctor.name,
+                branch=branch,
                 visit_date=visit_date
             ).count()
 
@@ -232,26 +279,50 @@ def add_pet(request):
             # =========================
 
             existing_appointments = Pet.objects.filter(
-                doctor=doctor,
+                doctor=doctor.name,
+                branch=branch,
                 visit_date=visit_date
             )
 
+            # New appointment datetime
             new_time = datetime.combine(
                 visit_date,
-                appointment_time
+                appointment_time_obj
             )
+
+            # =========================
+            # Check Consultation Time
+            # =========================
 
             for appointment in existing_appointments:
 
+                existing_appointment_time = (
+                    appointment.appointment_time
+                )
+
+                # If stored as string, convert it
+                # to datetime.time
+                if isinstance(
+                    existing_appointment_time,
+                    str
+                ):
+
+                    existing_appointment_time = datetime.strptime(
+                        existing_appointment_time,
+                        "%H:%M"
+                    ).time()
+
                 existing_time = datetime.combine(
                     visit_date,
-                    appointment.appointment_time
+                    existing_appointment_time
                 )
 
                 difference = abs(
                     new_time - existing_time
                 )
 
+                # Prevent booking during doctor's
+                # consultation time
                 if difference < timedelta(
                     minutes=doctor.consultation_time
                 ):
@@ -277,6 +348,12 @@ def add_pet(request):
 
             pet.status = "Waiting"
 
+            # Save doctor name
+            pet.doctor = doctor.name
+
+            # Assign appointment to doctor's branch
+            pet.branch = branch
+
             pet.save()
 
             return redirect(
@@ -286,7 +363,9 @@ def add_pet(request):
 
     else:
 
-        form = PetForm()
+        form = PetForm(
+            user=request.user
+        )
 
     pets_today = Pet.objects.none()
 
@@ -299,7 +378,6 @@ def add_pet(request):
             "pets_today": pets_today,
         }
     )
-
 
 # =========================
 # Appointment Confirmation
@@ -430,22 +508,45 @@ def available_times(request):
     doctor = request.GET.get("doctor")
     visit_date = request.GET.get("visit_date")
 
-    doctor_obj = None
     booked = []
     available = []
 
-    # All clinic appointment times
+    # =========================
+    # All Appointment Times
+    # Every 15 Minutes
+    # =========================
+
     all_times = [
         "09:00",
+        "09:15",
         "09:30",
+        "09:45",
         "10:00",
+        "10:15",
         "10:30",
+        "10:45",
         "11:00",
+        "11:15",
         "11:30",
+        "11:45",
         "12:00",
+        "12:15",
         "12:30",
+        "12:45",
         "13:00",
+        "13:15",
+        "13:30",
+        "13:45",
+        "14:00",
+        "14:15",
+        "14:30",
+        "14:45",
+        "15:00",
     ]
+
+    # =========================
+    # Doctor + Date Selected
+    # =========================
 
     if doctor and visit_date:
 
@@ -454,9 +555,19 @@ def available_times(request):
             id=doctor
         )
 
+        # =========================
+        # Doctor Consultation Time
+        # =========================
+
+        consultation_time = doctor_obj.consultation_time
+
+        # =========================
+        # Get Booked Appointments
+        # =========================
+
         booked = list(
             Pet.objects.filter(
-                doctor=doctor_obj,
+                doctor=doctor_obj.name,
                 visit_date=visit_date
             ).values_list(
                 "appointment_time",
@@ -464,25 +575,102 @@ def available_times(request):
             )
         )
 
+        # =========================
+        # Convert Booked Times
+        # To HH:MM
+        # =========================
+
         booked = [
             t.strftime("%H:%M")
+            if hasattr(t, "strftime")
+            else str(t)[:5]
             for t in booked
         ]
 
-        # Remove booked times
-        available = [
-            time for time in all_times
-            if time not in booked
-        ]
+        # =========================
+        # Convert Visit Date
+        # =========================
 
-    return render(
-        request,
-        "pets/available_times.html",
+        selected_date = datetime.strptime(
+            visit_date,
+            "%Y-%m-%d"
+        ).date()
+
+        # =========================
+        # Check Every Time
+        # According To Doctor
+        # Consultation Time
+        # =========================
+
+        for time in all_times:
+
+            current_time = datetime.strptime(
+                time,
+                "%H:%M"
+            ).time()
+
+            current_datetime = datetime.combine(
+                selected_date,
+                current_time
+            )
+
+            is_available = True
+
+            # =========================
+            # Compare With Existing
+            # Appointments
+            # =========================
+
+            for booked_time in booked:
+
+                booked_time_obj = datetime.strptime(
+                    booked_time,
+                    "%H:%M"
+                ).time()
+
+                booked_datetime = datetime.combine(
+                    selected_date,
+                    booked_time_obj
+                )
+
+                difference = abs(
+                    current_datetime - booked_datetime
+                )
+
+                # =========================
+                # Consultation Time Rule
+                # =========================
+
+                if difference < timedelta(
+                    minutes=consultation_time
+                ):
+
+                    is_available = False
+
+                    break
+
+            # =========================
+            # Add Available Time
+            # =========================
+
+            if is_available:
+
+                available.append(time)
+
+    else:
+
+        consultation_time = 0
+
+    # =========================
+    # Return JSON
+    # =========================
+
+    return JsonResponse(
         {
-            "doctor": doctor_obj,
-            "visit_date": visit_date,
+            "times": all_times,
             "booked": booked,
             "available": available,
+            "consultation_time": consultation_time,
         }
     )
 
@@ -706,7 +894,7 @@ def doctor_dashboard(request):
     for doctor in doctors:
 
         doctor_appointments = appointments.filter(
-            doctor=doctor
+            doctor=doctor.name
         )
 
         dashboard.append(

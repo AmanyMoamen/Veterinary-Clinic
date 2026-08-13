@@ -151,22 +151,6 @@
 
 <script>
 
-const times = [
-    "09:00",
-    "09:30",
-    "10:00",
-    "10:30",
-    "11:00",
-    "11:30",
-    "12:00",
-    "12:30",
-    "13:00",
-    "13:30",
-    "14:00",
-    "14:30",
-    "15:00"
-];
-
 const doctor = document.getElementById("id_doctor");
 const visitDate = document.getElementById("id_visit_date");
 const container = document.getElementById("time-buttons");
@@ -175,79 +159,138 @@ const container = document.getElementById("time-buttons");
 function loadTimes() {
 
     if (!doctor.value || !visitDate.value) {
+
         container.innerHTML = "";
+
         return;
     }
 
     console.log("Doctor =", doctor.value);
     console.log("Visit Date =", visitDate.value);
 
-    fetch("/pets/available-times/?doctor=" + doctor.value + "&visit_date=" + visitDate.value)
+    fetch(
+        "/pets/available-times/?doctor="
+        + doctor.value
+        + "&visit_date="
+        + visitDate.value
+    )
 
-        .then(response => response.json())
+    .then(response => response.json())
 
-        .then(data => {
+    .then(data => {
 
-            container.innerHTML = "";
+        container.innerHTML = "";
 
-            times.forEach(function(time){
+        console.log("All Times:", data.times);
+        console.log("Booked:", data.booked);
+        console.log("Available:", data.available);
+        console.log(
+            "Consultation Time:",
+            data.consultation_time
+        );
 
-                const btn = document.createElement("button");
 
-                btn.type = "button";
-                btn.innerHTML = time;
+        data.times.forEach(function(time) {
 
-                btn.style.margin = "5px";
-                btn.style.padding = "8px 15px";
-                btn.style.border = "none";
-                btn.style.borderRadius = "5px";
-                btn.style.color = "white";
+            const btn = document.createElement("button");
+
+            btn.type = "button";
+
+            btn.innerHTML = time;
+
+            btn.style.margin = "5px";
+            btn.style.padding = "8px 15px";
+            btn.style.border = "none";
+            btn.style.borderRadius = "5px";
+            btn.style.color = "white";
+
+
+            // =========================
+            // Booked Time
+            // =========================
+
+            if (data.booked.includes(time)) {
+
+                btn.style.background = "#dc3545";
+
+                btn.disabled = true;
+
+                btn.style.cursor = "not-allowed";
+
+            }
+
+
+            // =========================
+            // Available Time
+            // =========================
+
+            else if (data.available.includes(time)) {
+
+                btn.style.background = "#198754";
+
                 btn.style.cursor = "pointer";
 
 
-                console.log("Booked:", data.booked);
-                console.log("Current:", time);
+                btn.onclick = function() {
+
+                    document.getElementById(
+                        "id_appointment_time"
+                    ).value = time;
 
 
-                if (data.booked.indexOf(time) !== -1) {
+                    document
+                        .querySelectorAll(
+                            "#time-buttons button"
+                        )
+                        .forEach(function(b) {
 
-                    btn.style.background = "#dc3545";
-                    btn.disabled = true;
+                            if (!b.disabled) {
 
-                } else {
+                                b.style.outline = "none";
+                            }
 
-                    btn.style.background = "#198754";
-
-                }
-
-
-                btn.onclick = function(){
-
-                    document.getElementById("id_appointment_time").value = time;
+                        });
 
 
-                    document.querySelectorAll("#time-buttons button").forEach(function(b){
-
-                        if(!b.disabled){
-                            b.style.outline = "none";
-                        }
-
-                    });
-
-
-                    btn.style.outline = "3px solid black";
-
+                    btn.style.outline =
+                        "3px solid black";
                 };
 
+            }
 
-                container.appendChild(btn);
 
-            });
+            // =========================
+            // Unavailable Because of
+            // Consultation Time
+            // =========================
+
+            else {
+
+                btn.style.background = "#6c757d";
+
+                btn.disabled = true;
+
+                btn.style.cursor = "not-allowed";
+            }
+
+
+            container.appendChild(btn);
 
         });
 
-}
+    })
 
+    .catch(function(error) {
+
+        console.error(
+            "Error loading appointment times:",
+            error
+        );
+
+        container.innerHTML =
+            "<p style='color:red;'>Unable to load appointment times.</p>";
+    });
+}
 
 doctor.addEventListener("change", loadTimes);
 
