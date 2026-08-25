@@ -1,12 +1,30 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import User
 
 from .models import (
     Branch,
     Pet,
     Doctor,
+    DoctorSchedule,
     EditRequest,
     UserProfile,
 )
+
+class UserProfileInline(admin.StackedInline):
+    model = UserProfile
+    can_delete = False
+    extra = 0
+
+admin.site.unregister(User)
+
+
+@admin.register(User)
+class CustomUserAdmin(UserAdmin):
+
+    inlines = [
+        UserProfileInline,
+    ]
 
 
 # =========================
@@ -75,6 +93,40 @@ class DoctorAdmin(admin.ModelAdmin):
     search_fields = (
         "name",
         "user__username",
+    )
+
+
+# =========================
+# Doctor Schedule Admin
+# =========================
+
+@admin.register(DoctorSchedule)
+class DoctorScheduleAdmin(admin.ModelAdmin):
+
+    list_display = (
+        "doctor",
+        "branch",
+        "date",
+        "shift",
+        "start_time",
+        "end_time",
+    )
+
+    list_filter = (
+        "branch",
+        "shift",
+        "date",
+        "doctor",
+    )
+
+    search_fields = (
+        "doctor__name",
+        "branch__name",
+    )
+
+    ordering = (
+        "date",
+        "start_time",
     )
 
 

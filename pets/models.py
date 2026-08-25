@@ -99,6 +99,57 @@ class Doctor(models.Model):
 
 
 # =========================
+# Doctor Schedule / Shifts
+# =========================
+
+class DoctorSchedule(models.Model):
+
+    SHIFT_CHOICES = [
+        ("Morning", "Morning Shift"),
+        ("Evening", "Evening Shift"),
+    ]
+
+    doctor = models.ForeignKey(
+        Doctor,
+        on_delete=models.CASCADE,
+        related_name="schedules"
+    )
+
+    branch = models.ForeignKey(
+        Branch,
+        on_delete=models.CASCADE,
+        related_name="doctor_schedules"
+    )
+
+    date = models.DateField()
+
+    shift = models.CharField(
+        max_length=20,
+        choices=SHIFT_CHOICES
+    )
+
+    start_time = models.TimeField()
+
+    end_time = models.TimeField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["doctor", "date", "shift"],
+                name="unique_doctor_shift_per_day"
+            )
+        ]
+        ordering = ["date", "start_time"]
+
+    def __str__(self):
+        return (
+            f"{self.doctor.name} - "
+            f"{self.date} - "
+            f"{self.get_shift_display()}"
+        )
+
+
+# =========================
 # Pet / Appointment
 # =========================
 
@@ -184,6 +235,15 @@ class Pet(models.Model):
         blank=True,
         null=True
     )
+
+    # User who created the appointment
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="created_appointments"
+    )   
 
     def save(self, *args, **kwargs):
 
