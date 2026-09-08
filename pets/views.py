@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.db import connection
 from django.db.models import Count
 from datetime import datetime, timedelta, date
 from django.http import FileResponse, JsonResponse
@@ -25,6 +27,9 @@ def login_view(request):
 
         username = request.POST.get("username")
         password = request.POST.get("password")
+        
+        print("LOGIN DEBUG - DB:", connection.vendor)
+        print("LOGIN DEBUG - USER EXISTS:", User.objects.filter(username=username).exists())
 
         user = authenticate(
             request,
