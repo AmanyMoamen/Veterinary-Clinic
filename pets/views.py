@@ -29,6 +29,7 @@ def login_view(request):
         password = request.POST.get("password")
         
         print("LOGIN DEBUG - DB:", connection.vendor)
+        print("LOGIN DEBUG - USERNAME:", repr(username))
         print("LOGIN DEBUG - DB NAME:", connection.settings_dict.get("NAME"))
         print("LOGIN DEBUG - DB HOST:", connection.settings_dict.get("HOST"))
         print("LOGIN DEBUG - USER EXISTS:", User.objects.filter(username=username).exists())
