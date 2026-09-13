@@ -35,7 +35,9 @@ def login_view(request):
             request,
             username=username,
             password=password
-        )   
+        )
+
+        print("LOGIN DEBUG - AUTH RESULT:", user) 
 
         print("LOGIN DEBUG - PETS COUNT:", Pet.objects.count())
         print("LOGIN DEBUG - APPOINTMENTS COUNT:", Pet.objects.filter(appointment_time__isnull=False).count())
