@@ -30,6 +30,7 @@ def login_view(request):
         
         print("LOGIN DEBUG - DB:", connection.vendor)
         print("LOGIN DEBUG - USERNAME:", repr(username))
+        print("LOGIN DEBUG - ALL USERS:", [(u.id, u.username) for u in User.objects.all()])
         print("LOGIN DEBUG - DB NAME:", connection.settings_dict.get("NAME"))
         print("LOGIN DEBUG - DB HOST:", connection.settings_dict.get("HOST"))
         print("LOGIN DEBUG - USER EXISTS:", User.objects.filter(username=username).exists())
