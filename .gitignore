@@ -1,3 +1,11 @@
 venv/
 _pycache_/
 *.pyc
+full_data_backup.json
+migrate_data.py
+pets_backup.json
+pets_data.json
+db.sqlite3.backup
+db.sqlite3.current_backup
+full_data.json
+db.sqlite3

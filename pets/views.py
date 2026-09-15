@@ -27,24 +27,12 @@ def login_view(request):
 
         username = request.POST.get("username")
         password = request.POST.get("password")
-        
-        print("LOGIN DEBUG - DB:", connection.vendor)
-        print("LOGIN DEBUG - USERNAME:", repr(username))
-        print("LOGIN DEBUG - ALL USERS:", [(u.id, u.username) for u in User.objects.all()])
-        print("LOGIN DEBUG - DB NAME:", connection.settings_dict.get("NAME"))
-        print("LOGIN DEBUG - DB HOST:", connection.settings_dict.get("HOST"))
-        print("LOGIN DEBUG - USER EXISTS:", User.objects.filter(username=username).exists())
 
         user = authenticate(
             request,
             username=username,
             password=password
         )
-
-        print("LOGIN DEBUG - AUTH RESULT:", user) 
-
-        print("LOGIN DEBUG - PETS COUNT:", Pet.objects.count())
-        print("LOGIN DEBUG - APPOINTMENTS COUNT:", Pet.objects.filter(appointment_time__isnull=False).count())
 
         if user is not None:
 
